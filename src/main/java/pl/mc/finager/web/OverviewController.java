@@ -1,7 +1,5 @@
 package pl.mc.finager.web;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -21,18 +19,12 @@ public class OverviewController {
 	private static final Logger logger = LoggerFactory.getLogger(OverviewController.class);
 	
 	/** Simply selects the overview to render by returning its name. */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	@RequestMapping(value = {"/","/overview"}, method = RequestMethod.GET)
+	public String overview(Locale locale, Model model) {
 		logger.info("Welcome in overview! The client locale is {}.", locale);
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		
-		return "overview";
+		String activeView = new String("overview");
+		model.addAttribute("activeView", activeView);
+		return activeView;
 	}
 	
 }
