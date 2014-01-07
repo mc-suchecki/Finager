@@ -16,7 +16,6 @@
 				<li><a href="/finager/accounts">Accounts</a></li>
 				<li><a href="/finager/transactions">Transactions</a></li>
 				<li><a href="/finager/reports">Reports</a></li>
-				<li><a href="/finager/settings">Settings</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			<li class="dropdown">
