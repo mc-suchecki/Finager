@@ -24,7 +24,6 @@
 				<!-- Transactions table mockup -->
 				<div class="row">
 					<table class="table table-striped">
-						<tbody>
 						<thead>
 							<tr>
 								<th>Account</th>
@@ -36,6 +35,7 @@
 								<th>Actions</th>
 							</tr>
 						</thead>
+						<tbody>
 						<tr>
 							<td>Regular account</td> <td>Income</td> <td>Nothing to see here, move around.</td> <td>03-02-2014</td> <td>100</td> <td>PLN</td> <td>TODO</td>
 						</tr>

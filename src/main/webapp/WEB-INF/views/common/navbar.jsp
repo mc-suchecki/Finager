@@ -1,3 +1,5 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
@@ -12,10 +14,38 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="/finager/overview/">Overview</a></li>
-				<li><a href="/finager/accounts">Accounts</a></li>
-				<li><a href="/finager/transactions">Transactions</a></li>
-				<li><a href="/finager/reports">Reports</a></li>
+				<c:choose>
+					<c:when test='${activeView == "overview"}'>
+						<li class="active"><a href="/finager/overview/">Overview</a></li>
+						<li><a href="/finager/accounts">Accounts</a></li>
+						<li><a href="/finager/transactions">Transactions</a></li>
+						<li><a href="/finager/reports">Reports</a></li>
+    				</c:when>
+					<c:when test='${activeView == "accounts"}'>
+						<li><a href="/finager/overview/">Overview</a></li>
+						<li class="active"><a href="/finager/accounts">Accounts</a></li>
+						<li><a href="/finager/transactions">Transactions</a></li>
+						<li><a href="/finager/reports">Reports</a></li>
+    				</c:when>
+					<c:when test='${activeView == "transactions"}'>
+						<li><a href="/finager/overview/">Overview</a></li>
+						<li><a href="/finager/accounts">Accounts</a></li>
+						<li class="active"><a href="/finager/transactions">Transactions</a></li>
+						<li><a href="/finager/reports">Reports</a></li>
+    				</c:when>
+					<c:when test='${activeView == "reports"}'>
+						<li><a href="/finager/overview/">Overview</a></li>
+						<li><a href="/finager/accounts">Accounts</a></li>
+						<li><a href="/finager/transactions">Transactions</a></li>
+						<li class="active"><a href="/finager/reports">Reports</a></li>
+    				</c:when>
+					<c:otherwise>
+						<li><a href="/finager/overview/">Overview</a></li>
+						<li><a href="/finager/accounts">Accounts</a></li>
+						<li><a href="/finager/transactions">Transactions</a></li>
+						<li><a href="/finager/reports">Reports</a></li>
+ 					</c:otherwise>
+				</c:choose>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			<li class="dropdown">

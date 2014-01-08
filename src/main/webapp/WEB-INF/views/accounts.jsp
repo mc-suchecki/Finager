@@ -16,7 +16,6 @@
 		<!-- Accounts table mockup -->
 		<div class="row">
 			<table class="table table-striped">
-				<tbody>
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -27,6 +26,7 @@
 					<tr>
 				</thead>
 
+				<tbody>
 				<tr>
 					<td>Regular account</td>
 					<td>Bank account</td>
