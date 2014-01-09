@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel>
+<schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<database name="new_database">
+</database>
+
+<table name="Users">
+	<schema name="public"/>
+	<position x="20" y="100"/>
+	<column name="id_user" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="e_mail" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="surname" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="users_pk" type="pk-constr" factor="10" table="public.&quot;Users&quot;">
+		<columns names="id_user" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="e_mail_uk" type="uq-constr" factor="10" table="public.&quot;Users&quot;">
+		<columns names="e_mail" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Roles">
+	<schema name="public"/>
+	<position x="20" y="320"/>
+	<column name="id_user" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="role" not-null="true">
+		<type name="char" length="10"/>
+	</column>
+	<constraint name="roles_pk" type="pk-constr" factor="10" table="public.&quot;Roles&quot;">
+		<columns names="id_user,role" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Accounts">
+	<schema name="public"/>
+	<position x="403" y="120"/>
+	<column name="id_account" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="balance" not-null="true" default-value="0">
+		<type name="numeric" length="12" precision="4"/>
+		<comment><![CDATA[Current balance of the account.]]></comment>
+	</column>
+	<constraint name="accounts_pk" type="pk-constr" factor="10" table="public.&quot;Accounts&quot;">
+		<columns names="id_account" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Currencies">
+	<schema name="public"/>
+	<position x="400" y="320"/>
+	<column name="iso_code" not-null="true">
+		<type name="char" length="3"/>
+		<comment><![CDATA[ISO 4217 currency code.]]></comment>
+	</column>
+	<column name="digits_after_separator" not-null="true" default-value="2">
+		<type name="numeric" precision="0"/>
+		<comment><![CDATA[Number of digits after the decimal separator.]]></comment>
+	</column>
+	<constraint name="currencies_pk" type="pk-constr" factor="10" table="public.&quot;Currencies&quot;">
+		<columns names="iso_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Transactions">
+	<schema name="public"/>
+	<position x="741" y="1"/>
+	<column name="id_transaction" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="id_account_to">
+		<type name="integer"/>
+	</column>
+	<column name="id_account_from">
+		<type name="integer"/>
+	</column>
+	<column name="account_to_balance_after">
+		<type name="numeric" length="12" precision="4"/>
+		<comment><![CDATA[Balance in 'account_to' after the transaction.]]></comment>
+	</column>
+	<column name="account_from_balance_after">
+		<type name="numeric" length="12" precision="4"/>
+		<comment><![CDATA[Balance in 'account_from' after the transaction.]]></comment>
+	</column>
+	<column name="description">
+		<type name="varchar" length="255"/>
+	</column>
+	<column name="transaction_date" not-null="true">
+		<type name="date"/>
+	</column>
+	<column name="value_transferred" not-null="true">
+		<type name="numeric" length="12" precision="4"/>
+		<comment><![CDATA[Money amount transferred within the transaction.]]></comment>
+	</column>
+	<constraint name="transactions_pk" type="pk-constr" factor="10" table="public.&quot;Transactions&quot;">
+		<columns names="id_transaction" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Categories">
+	<schema name="public"/>
+	<position x="800" y="320"/>
+	<column name="id_category" not-null="true">
+		<type name="smallserial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="categories_pk" type="pk-constr" factor="10" table="public.&quot;Categories&quot;">
+		<columns names="id_category" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Account_types">
+	<schema name="public"/>
+	<position x="400" y="0"/>
+	<column name="id_account_type" not-null="true">
+		<type name="smallserial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="account_types_pk" type="pk-constr" factor="10" table="public.&quot;Account_types&quot;">
+		<columns names="id_account_type" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="User_has_many_Accounts" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="1" constr-indexes="1"
+	 src-table="public.&quot;Users&quot;"
+	 dst-table="public.&quot;Accounts&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="src-label">
+		<position x="0" y="0"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="-35.2743" y="33.9515"/>
+	</label>
+</relationship>
+
+<relationship name="Account_has_Currency" type="rel1n"
+	 src-col-pattern="id_currency"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="3" constr-indexes="2"
+	 src-table="public.&quot;Currencies&quot;"
+	 dst-table="public.&quot;Accounts&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="src-label">
+		<position x="43.6635" y="-3.20001"/>
+	</label>
+	<label ref-type="dst-label">
+		<position x="37.0013" y="13.6"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="-89.2743" y="-6.04852"/>
+	</label>
+</relationship>
+
+<relationship name="Account_has_type" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="2" constr-indexes="3"
+	 src-table="public.&quot;Account_types&quot;"
+	 dst-table="public.&quot;Accounts&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="src-label">
+		<position x="27.7119" y="1.6"/>
+	</label>
+	<label ref-type="dst-label">
+		<position x="36.7919" y="-2.2"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="-75.0243" y="-49.0485"/>
+	</label>
+</relationship>
+
+<relationship name="Transaction_has_Category" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="3" constr-indexes="1"
+	 src-table="public.&quot;Categories&quot;"
+	 dst-table="public.&quot;Transactions&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="src-label">
+		<position x="-36.9196" y="0.799988"/>
+	</label>
+	<label ref-type="dst-label">
+		<position x="43.216" y="3.60001"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="-103.274" y="17.4515"/>
+	</label>
+</relationship>
+
+<relationship name="Category_may_have_parent" type="rel1n"
+	 src-col-pattern="id_parent"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="1" constr-indexes="1"
+	 src-table="public.&quot;Categories&quot;"
+	 dst-table="public.&quot;Categories&quot;"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="1033" y="346.16"/>
+	<position x="1033" y="310"/>
+	<position x="948.667" y="310"/>
+	</line>
+	<label ref-type="src-label">
+		<position x="15" y="23.24"/>
+	</label>
+	<label ref-type="dst-label">
+		<position x="2.73334" y="-13.2"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="-17.0243" y="-21.2"/>
+	</label>
+</relationship>
+
+<constraint name="users_roles_fk" type="fk-constr"	 comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Users&quot;" table="public.&quot;Roles&quot;">
+	<columns names="id_user" ref-type="src-columns"/>
+	<columns names="id_user" ref-type="dst-columns"/>
+</constraint>
+<constraint name="Transaction_has_source" type="fk-constr"	 comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Accounts&quot;" table="public.&quot;Transactions&quot;">
+	<columns names="id_account_from" ref-type="src-columns"/>
+	<columns names="id_account" ref-type="dst-columns"/>
+</constraint>
+<constraint name="Transaction_has_destination" type="fk-constr"	 comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Accounts&quot;" table="public.&quot;Transactions&quot;">
+	<columns names="id_account_to" ref-type="src-columns"/>
+	<columns names="id_account" ref-type="dst-columns"/>
+</constraint>
+<relationship name="Transactions_belong_to_Accounts" type="relfk"
+	 src-table="public.&quot;Transactions&quot;"
+	 dst-table="public.&quot;Accounts&quot;"
+	 src-required="true" dst-required="true">
+	<line>
+		<position x="900" y="160"/>
+	</line>
+	<label ref-type="src-label">
+		<position x="-28.1981" y="-0.399994"/>
+	</label>
+	<label ref-type="dst-label">
+		<position x="2.99994" y="-26.5975"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="81.7257" y="1.30147"/>
+	</label>
+</relationship>
+
+<relationship name="Users_have_Roles" type="relfk"
+	 src-table="public.&quot;Roles&quot;"
+	 dst-table="public.&quot;Users&quot;"
+	 src-required="true" dst-required="true">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+</dbmodel>
