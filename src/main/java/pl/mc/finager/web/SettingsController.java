@@ -1,6 +1,6 @@
 package pl.mc.finager.web;
 
-import java.util.Locale;
+import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,10 @@ public class SettingsController {
 	
 	/** Simply selects the settings view to render by returning its name. */
 	@RequestMapping(value = "/settings", method = RequestMethod.GET)
-	public String settings(Locale locale, Model model) {
-		logger.info("Welcome in settings! The client locale is {}.", locale);
+	public String settings(Model model, Principal principal) {
+		logger.info("SettingsController");
+		String name = principal.getName();
+		model.addAttribute("username", name);
 		String activeView = new String("settings");
 		model.addAttribute("activeView", activeView);
 		return activeView;

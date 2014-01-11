@@ -6,16 +6,24 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
  
+	<http pattern="/login" security="none" />
+	<http pattern="/logout" security="none" />
+	<http pattern="/loginfailed" security="none" />
+
 	<http auto-config="true">
 		<intercept-url pattern="/*" access="ROLE_USER" />
+		<form-login login-page="/login" default-target-url="/overview"
+			authentication-failure-url="/loginfailed" />
+		<logout logout-success-url="/logout" />
 	</http>
- 
+
 	<authentication-manager>
 	  <authentication-provider>
+		<password-encoder hash="sha-256" />
 	    <user-service>
-		<user name="mc" password="lol" authorities="ROLE_USER" />
+		<user name="mc" password="07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc" authorities="ROLE_USER" />
 	    </user-service>
 	  </authentication-provider>
 	</authentication-manager>
- 
+
 </beans:beans>

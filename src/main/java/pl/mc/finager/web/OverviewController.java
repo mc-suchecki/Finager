@@ -1,6 +1,6 @@
 package pl.mc.finager.web;
 
-import java.util.Locale;
+import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,10 @@ public class OverviewController {
 	
 	/** Simply selects the overview to render by returning its name. */
 	@RequestMapping(value = {"/","/overview"}, method = RequestMethod.GET)
-	public String overview(Locale locale, Model model) {
-		logger.info("Welcome in overview! The client locale is {}.", locale);
+	public String overview(Model model, Principal principal) {
+		logger.info("OverviewController");
+		String name = principal.getName();
+		model.addAttribute("username", name);
 		String activeView = new String("overview");
 		model.addAttribute("activeView", activeView);
 		return activeView;

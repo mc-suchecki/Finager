@@ -1,6 +1,6 @@
 package pl.mc.finager.web;
 
-import java.util.Locale;
+import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,10 @@ public class AccountsController {
 	
 	/** Simply selects the accounts to render by returning its name. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public String accounts(Locale locale, Model model) {
-		logger.info("Welcome in accounts! The client locale is {}.", locale);
+	public String accounts(Model model, Principal principal) {
+		logger.info("AccountsController");
+		String name = principal.getName();
+		model.addAttribute("username", name);
 		String activeView = new String("accounts");
 		model.addAttribute("activeView", activeView);
 		return activeView;
