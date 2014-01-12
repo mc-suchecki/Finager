@@ -14,7 +14,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Finager</title>
 
-	<!-- Finager own CSS file FIXME - not visible already! -->
 	<spring:url value="/resources/css/finager.css" var="finagerCSS" />
 	<link href="${finagerCSS}" rel="stylesheet" />
 

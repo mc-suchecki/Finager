@@ -1,1 +1,4 @@
-# this is a place to put app-specyfic CSS styles
+/* Used in login page - TODO do it properly */
+.spacer {
+  margin-top: 100px;
+}
