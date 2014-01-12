@@ -36,4 +36,9 @@ public class LoginController {
 		return "login";
 	}
 
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String register(Model model) {
+		logger.info("LoginController");
+		return "register";
+	}
 }

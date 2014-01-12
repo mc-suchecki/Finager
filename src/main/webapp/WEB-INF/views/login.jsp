@@ -30,8 +30,9 @@
 
 				<form class="form-signin" role="form" method='POST' action="<c:url value='j_spring_security_check' />">
 					<input name="j_username" type="text" class="form-control" placeholder="E-mail address" required autofocus>
-					<input name="j_password" type="password" class="form-control" placeholder="Password" required> <br>
+					<br> <input name="j_password" type="password" class="form-control" placeholder="Password" required> <br>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+					<span class="help-block">or <a href="<c:url value="/register" />">Register</a></span>
 				</form>
 
 			</div>
