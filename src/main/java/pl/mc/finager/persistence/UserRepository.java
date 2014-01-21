@@ -2,7 +2,8 @@ package pl.mc.finager.persistence;
 
 import org.springframework.dao.DataAccessException;
 
-import pl.mc.finager.persistence.po.UserPO;
+import pl.mc.finager.model.fo.UserFO;
+import pl.mc.finager.model.vo.UserVO;
 
 /** 
  * Interface representing repositories performing queries associated with User entities.
@@ -16,7 +17,7 @@ public interface UserRepository {
 	 * @return null if User was not found
 	 * @throws DataAccessException when there is a problem with a connection
 	 */
-	UserPO findByID(int id) throws DataAccessException;
+	UserVO findByID(long id) throws DataAccessException;
 
 	/**
 	 * Finds User with the provided e-mail address.
@@ -24,5 +25,11 @@ public interface UserRepository {
 	 * @return null if User was not found
 	 * @throws DataAccessException when there is a problem with a connection
 	 */
-	UserPO findByEmail(String email) throws DataAccessException;
+	UserVO findByEmail(String email) throws DataAccessException;
+
+	/**
+	 * Registers new user in the database.
+	 * @param newUser POJO with new user data
+	 */
+	void addNewUser(UserFO newUser);
 }

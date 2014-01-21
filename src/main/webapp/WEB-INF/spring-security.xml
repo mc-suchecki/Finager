@@ -19,13 +19,19 @@
 			authentication-failure-url="/loginfailed" />
 		<logout logout-success-url="/logout" />
 	</http>
-
+	
 	<!-- Source of user data for Security module -->
 	<authentication-manager>
-		<authentication-provider user-service-ref='userDetailsService' />
+		<authentication-provider user-service-ref='userDetailsService'>
+			<password-encoder hash="sha-256">
+				<salt-source ref="saltSource" />
+			</password-encoder>
+		</authentication-provider>
 	</authentication-manager>
 	<beans:bean id="userDetailsService" class="pl.mc.finager.service.UserService" />
+	<beans:bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
+    	<beans:property name="userPropertyToUse" value="username"/>
+    	<!-- username is specified as salt source, but it is actually e_mail field from the DB! -->
+	</beans:bean>
 
-	<!-- TODO add salt and hash! -->
-	<!-- <password-encoder hash="sha-256" /> -->
 </beans:beans>

@@ -17,44 +17,36 @@ SET check_function_bodies = false;
 
 -- object: public.users | type: TABLE --
 CREATE TABLE public.users(
-	id_user serial NOT NULL,
+	user_id serial NOT NULL,
 	e_mail varchar(64) NOT NULL,
-	password_hash char(64) NOT NULL,
 	name varchar(64) NOT NULL,
 	surname varchar(64) NOT NULL,
-	password_salt char(16),
-	CONSTRAINT users_pk PRIMARY KEY (id_user),
+	CONSTRAINT users_pk PRIMARY KEY (user_id),
 	CONSTRAINT e_mail_uk UNIQUE (e_mail)
 
 );
 -- ddl-end --
-COMMENT ON COLUMN public.users.password_hash IS 'SHA-256 hash of the password used by the user.';
--- ddl-end --
-COMMENT ON COLUMN public.users.password_salt IS 'Salt of the password concatenated before calculating the hash.';
--- ddl-end --
--- ddl-end --
-
 -- object: public.roles | type: TABLE --
 CREATE TABLE public.roles(
-	id_user integer NOT NULL,
+	user_id integer NOT NULL,
 	role char(10) NOT NULL,
-	CONSTRAINT roles_pk PRIMARY KEY (id_user,role)
+	CONSTRAINT roles_pk PRIMARY KEY (user_id,role)
 
 );
 -- ddl-end --
 -- object: public.accounts | type: TABLE --
 CREATE TABLE public.accounts(
-	id_account serial NOT NULL,
-	id_user integer NOT NULL,
-	id_account_type smallint NOT NULL,
-	id_currency char(3) NOT NULL,
-	name varchar(64) NOT NULL,
+	account_id serial NOT NULL,
+	user_id integer NOT NULL,
+	account_type_id smallint NOT NULL,
+	currency_code char(3) NOT NULL,
 	balance numeric(12,4) NOT NULL DEFAULT 0,
-	CONSTRAINT accounts_pk PRIMARY KEY (id_account)
+	name varchar(64) NOT NULL,
+	CONSTRAINT accounts_pk PRIMARY KEY (account_id)
 
 );
 -- ddl-end --
-COMMENT ON COLUMN public.accounts.id_currency IS 'ISO 4217 currency code.';
+COMMENT ON COLUMN public.accounts.currency_code IS 'ISO 4217 currency code.';
 -- ddl-end --
 COMMENT ON COLUMN public.accounts.balance IS 'Current balance of the account.';
 -- ddl-end --
@@ -76,96 +68,85 @@ COMMENT ON COLUMN public.currencies.digits_after_separator IS 'Number of digits 
 
 -- object: public.transactions | type: TABLE --
 CREATE TABLE public.transactions(
-	id_transaction bigserial NOT NULL,
-	id_category smallint NOT NULL,
-	value_transferred numeric(12,4) NOT NULL,
-	account_to_balance_after numeric(12,4),
-	account_from_balance_after numeric(12,4),
-	description varchar(255),
-	id_account_to integer,
-	id_account_from integer,
+	transaction_number bigserial NOT NULL,
+	account_id integer NOT NULL,
+	category_id smallint NOT NULL,
 	transaction_date date NOT NULL,
-	CONSTRAINT transactions_pk PRIMARY KEY (id_transaction)
+	value_transferred numeric(12,4) NOT NULL,
+	account_balance_after numeric(12,4) NOT NULL,
+	description varchar(255),
+	CONSTRAINT transactions_pk PRIMARY KEY (transaction_number,account_id)
 
 );
 -- ddl-end --
 COMMENT ON COLUMN public.transactions.value_transferred IS 'Money amount transferred within the transaction.';
 -- ddl-end --
-COMMENT ON COLUMN public.transactions.account_to_balance_after IS 'Balance in account_to after the transaction.';
--- ddl-end --
-COMMENT ON COLUMN public.transactions.account_from_balance_after IS 'Balance in account_from after the transaction.';
+COMMENT ON COLUMN public.transactions.account_balance_after IS 'Balance in account after the transaction.';
 -- ddl-end --
 -- ddl-end --
 
 -- object: public.categories | type: TABLE --
 CREATE TABLE public.categories(
-	id_category smallserial NOT NULL,
+	category_id smallserial NOT NULL,
 	name varchar(64) NOT NULL,
-	id_parent smallint,
-	CONSTRAINT categories_pk PRIMARY KEY (id_category)
+	parent_id smallint,
+	CONSTRAINT categories_pk PRIMARY KEY (category_id)
 
 );
 -- ddl-end --
 -- object: public.account_types | type: TABLE --
 CREATE TABLE public.account_types(
-	id_account_type smallserial NOT NULL,
+	account_type_id smallserial NOT NULL,
 	name varchar(64) NOT NULL,
-	CONSTRAINT account_types_pk PRIMARY KEY (id_account_type)
+	CONSTRAINT account_types_pk PRIMARY KEY (account_type_id)
 
 );
 -- ddl-end --
 -- object: users_fk | type: CONSTRAINT --
-ALTER TABLE public.accounts ADD CONSTRAINT users_fk FOREIGN KEY (id_user)
-REFERENCES public.users (id_user) MATCH FULL
+ALTER TABLE public.accounts ADD CONSTRAINT users_fk FOREIGN KEY (user_id)
+REFERENCES public.users (user_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE NOT DEFERRABLE;
 -- ddl-end --
 
 
 -- object: currencies_fk | type: CONSTRAINT --
-ALTER TABLE public.accounts ADD CONSTRAINT currencies_fk FOREIGN KEY (id_currency)
+ALTER TABLE public.accounts ADD CONSTRAINT currencies_fk FOREIGN KEY (currency_code)
 REFERENCES public.currencies (iso_code) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE NOT DEFERRABLE;
 -- ddl-end --
 
 
 -- object: account_types_fk | type: CONSTRAINT --
-ALTER TABLE public.accounts ADD CONSTRAINT account_types_fk FOREIGN KEY (id_account_type)
-REFERENCES public.account_types (id_account_type) MATCH FULL
+ALTER TABLE public.accounts ADD CONSTRAINT account_types_fk FOREIGN KEY (account_type_id)
+REFERENCES public.account_types (account_type_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE NOT DEFERRABLE;
 -- ddl-end --
 
 
 -- object: categories_fk | type: CONSTRAINT --
-ALTER TABLE public.transactions ADD CONSTRAINT categories_fk FOREIGN KEY (id_category)
-REFERENCES public.categories (id_category) MATCH FULL
+ALTER TABLE public.transactions ADD CONSTRAINT categories_fk FOREIGN KEY (category_id)
+REFERENCES public.categories (category_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE NOT DEFERRABLE;
 -- ddl-end --
 
 
 -- object: categories_fk | type: CONSTRAINT --
-ALTER TABLE public.categories ADD CONSTRAINT categories_fk FOREIGN KEY (id_parent)
-REFERENCES public.categories (id_category) MATCH FULL
+ALTER TABLE public.categories ADD CONSTRAINT categories_fk FOREIGN KEY (parent_id)
+REFERENCES public.categories (category_id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE NOT DEFERRABLE;
 -- ddl-end --
 
 
+-- object: accounts_fk | type: CONSTRAINT --
+ALTER TABLE public.transactions ADD CONSTRAINT accounts_fk FOREIGN KEY (account_id)
+REFERENCES public.accounts (account_id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE NOT DEFERRABLE;
+-- ddl-end --
+
+
 -- object: users_roles_fk | type: CONSTRAINT --
-ALTER TABLE public.roles ADD CONSTRAINT users_roles_fk FOREIGN KEY (id_user)
-REFERENCES public.users (id_user) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
--- ddl-end --
-
-
--- object: "Transaction_has_source" | type: CONSTRAINT --
-ALTER TABLE public.transactions ADD CONSTRAINT "Transaction_has_source" FOREIGN KEY (id_account_from)
-REFERENCES public.accounts (id_account) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
--- ddl-end --
-
-
--- object: "Transaction_has_destination" | type: CONSTRAINT --
-ALTER TABLE public.transactions ADD CONSTRAINT "Transaction_has_destination" FOREIGN KEY (id_account_to)
-REFERENCES public.accounts (id_account) MATCH FULL
+ALTER TABLE public.roles ADD CONSTRAINT users_roles_fk FOREIGN KEY (user_id)
+REFERENCES public.users (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
 -- ddl-end --
 

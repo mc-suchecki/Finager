@@ -36,7 +36,7 @@
 	</beans:bean>
 	
 	<!-- Persistence -->
-	<!-- data source -->
+	<!-- Data source -->
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 			destroy-method="close">
 			<beans:property name="driverClassName" value="org.postgresql.Driver" />
@@ -45,7 +45,7 @@
 			<beans:property name="password" value="finager_db_password" />
 	</beans:bean>
 	
-	<!-- entity manger -->
+	<!-- Entity manger -->
 	<beans:bean id="entityManagerFactory"
 			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 			<beans:property name="persistenceUnitName" value="persistenceUnit" />

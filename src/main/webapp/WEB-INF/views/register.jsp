@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <%@ include file="/WEB-INF/views/common/head.jsp"%>
 
@@ -15,14 +17,21 @@
 
 				<br>
 
-				<form class="form-signin" role="form" method='POST' action="submit">
-					<input name="name" type="text" class="form-control" placeholder="Name" required autofocus> <br>
-					<input name="surname" type="text" class="form-control" placeholder="Surname" required> <br>
-					<input name="email" type="text" class="form-control" placeholder="E-mail address" required> <br>
-					<input name="password" type="password" class="form-control" placeholder="Password" required> <br>
-					<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+				<form:form id="form" method="POST" modelAttribute="UserFO" class="form-signin" role="form">
+					<spring:bind path="*">
+						<c:if test="${status.error}">
+							<div class="alert alert-danger">
+								<strong>Oh snap!</strong> Form has errors. Please try again.
+							</div>
+						</c:if>
+					</spring:bind>
+					<form:input path="name" type="text" class="form-control" placeholder="Name" autofocus="autoficus" /> <br>
+					<form:input path="surname" type="text" class="form-control" placeholder="Surname" /> <br>
+					<form:input path="email" type="email" class="form-control" placeholder="E-mail address" /> <br>
+					<form:input path="password" type="password" class="form-control" placeholder="Password" /> <br>
+					<form:button class="btn btn-lg btn-primary btn-block" type="submit">Register</form:button>
 					<span class="help-block">or <a href="<c:url value="/login" />">Log in</a></span>
-				</form>
+				</form:form>
 
 			</div>
 		</div>

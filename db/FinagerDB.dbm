@@ -7,17 +7,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<database name="new_database">
+<database name="finager">
 </database>
 
-<table name="Users">
+<table name="users">
 	<schema name="public"/>
 	<position x="20" y="100"/>
-	<column name="id_user" not-null="true">
+	<column name="user_id" not-null="true">
 		<type name="serial"/>
 	</column>
 	<column name="e_mail" not-null="true">
 		<type name="varchar" length="64"/>
+		<comment><![CDATA[Is also used as salt - email is concatenated before calculating the password hash.]]></comment>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="64"/>
@@ -25,47 +26,51 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="surname" not-null="true">
 		<type name="varchar" length="64"/>
 	</column>
-	<constraint name="users_pk" type="pk-constr" factor="10" table="public.&quot;Users&quot;">
-		<columns names="id_user" ref-type="src-columns"/>
+	<column name="password_hash" not-null="true">
+		<type name="char" length="64"/>
+		<comment><![CDATA[SHA-256 hash of the password used by the user.]]></comment>
+	</column>
+	<constraint name="users_pk" type="pk-constr" factor="10" table="public.users">
+		<columns names="user_id" ref-type="src-columns"/>
 	</constraint>
-	<constraint name="e_mail_uk" type="uq-constr" factor="10" table="public.&quot;Users&quot;">
+	<constraint name="e_mail_uk" type="uq-constr" factor="10" table="public.users">
 		<columns names="e_mail" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Roles">
+<table name="roles">
 	<schema name="public"/>
 	<position x="20" y="320"/>
-	<column name="id_user" not-null="true">
+	<column name="user_id" not-null="true">
 		<type name="integer"/>
 	</column>
 	<column name="role" not-null="true">
 		<type name="char" length="10"/>
 	</column>
-	<constraint name="roles_pk" type="pk-constr" factor="10" table="public.&quot;Roles&quot;">
-		<columns names="id_user,role" ref-type="src-columns"/>
+	<constraint name="roles_pk" type="pk-constr" factor="10" table="public.roles">
+		<columns names="user_id,role" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Accounts">
+<table name="accounts">
 	<schema name="public"/>
 	<position x="403" y="120"/>
-	<column name="id_account" not-null="true">
+	<column name="account_id" not-null="true">
 		<type name="serial"/>
-	</column>
-	<column name="name" not-null="true">
-		<type name="varchar" length="64"/>
 	</column>
 	<column name="balance" not-null="true" default-value="0">
 		<type name="numeric" length="12" precision="4"/>
 		<comment><![CDATA[Current balance of the account.]]></comment>
 	</column>
-	<constraint name="accounts_pk" type="pk-constr" factor="10" table="public.&quot;Accounts&quot;">
-		<columns names="id_account" ref-type="src-columns"/>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="accounts_pk" type="pk-constr" factor="10" table="public.accounts">
+		<columns names="account_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Currencies">
+<table name="currencies">
 	<schema name="public"/>
 	<position x="400" y="320"/>
 	<column name="iso_code" not-null="true">
@@ -76,71 +81,61 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="numeric" precision="0"/>
 		<comment><![CDATA[Number of digits after the decimal separator.]]></comment>
 	</column>
-	<constraint name="currencies_pk" type="pk-constr" factor="10" table="public.&quot;Currencies&quot;">
+	<constraint name="currencies_pk" type="pk-constr" factor="10" table="public.currencies">
 		<columns names="iso_code" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Transactions">
+<table name="transactions">
 	<schema name="public"/>
-	<position x="741" y="1"/>
-	<column name="id_transaction" not-null="true">
+	<position x="781" y="0"/>
+	<column name="transaction_number" not-null="true">
 		<type name="bigserial"/>
 	</column>
-	<column name="id_account_to">
-		<type name="integer"/>
-	</column>
-	<column name="id_account_from">
-		<type name="integer"/>
-	</column>
-	<column name="account_to_balance_after">
+	<column name="account_balance_after" not-null="true">
 		<type name="numeric" length="12" precision="4"/>
-		<comment><![CDATA[Balance in 'account_to' after the transaction.]]></comment>
-	</column>
-	<column name="account_from_balance_after">
-		<type name="numeric" length="12" precision="4"/>
-		<comment><![CDATA[Balance in 'account_from' after the transaction.]]></comment>
+		<comment><![CDATA[Balance in account after the transaction.]]></comment>
 	</column>
 	<column name="description">
 		<type name="varchar" length="255"/>
-	</column>
-	<column name="transaction_date" not-null="true">
-		<type name="date"/>
 	</column>
 	<column name="value_transferred" not-null="true">
 		<type name="numeric" length="12" precision="4"/>
 		<comment><![CDATA[Money amount transferred within the transaction.]]></comment>
 	</column>
-	<constraint name="transactions_pk" type="pk-constr" factor="10" table="public.&quot;Transactions&quot;">
-		<columns names="id_transaction" ref-type="src-columns"/>
+	<column name="transaction_date" not-null="true">
+		<type name="date"/>
+	</column>
+	<constraint name="transactions_pk" type="pk-constr" factor="10" table="public.transactions">
+		<columns names="transaction_number" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Categories">
+<table name="categories">
 	<schema name="public"/>
 	<position x="800" y="320"/>
-	<column name="id_category" not-null="true">
+	<column name="category_id" not-null="true">
 		<type name="smallserial"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="64"/>
 	</column>
-	<constraint name="categories_pk" type="pk-constr" factor="10" table="public.&quot;Categories&quot;">
-		<columns names="id_category" ref-type="src-columns"/>
+	<constraint name="categories_pk" type="pk-constr" factor="10" table="public.categories">
+		<columns names="category_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Account_types">
+<table name="account_types">
 	<schema name="public"/>
 	<position x="400" y="0"/>
-	<column name="id_account_type" not-null="true">
+	<column name="account_type_id" not-null="true">
 		<type name="smallserial"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="64"/>
 	</column>
-	<constraint name="account_types_pk" type="pk-constr" factor="10" table="public.&quot;Account_types&quot;">
-		<columns names="id_account_type" ref-type="src-columns"/>
+	<constraint name="account_types_pk" type="pk-constr" factor="10" table="public.account_types">
+		<columns names="account_type_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -149,8 +144,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
 	 col-indexes="1" constr-indexes="1"
-	 src-table="public.&quot;Users&quot;"
-	 dst-table="public.&quot;Accounts&quot;"
+	 src-table="public.users"
+	 dst-table="public.accounts"
 	 src-required="true" dst-required="false">
 	<label ref-type="src-label">
 		<position x="0" y="0"/>
@@ -161,12 +156,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </relationship>
 
 <relationship name="Account_has_Currency" type="rel1n"
-	 src-col-pattern="id_currency"
+	 src-col-pattern="currency_code"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
 	 col-indexes="3" constr-indexes="2"
-	 src-table="public.&quot;Currencies&quot;"
-	 dst-table="public.&quot;Accounts&quot;"
+	 src-table="public.currencies"
+	 dst-table="public.accounts"
 	 src-required="true" dst-required="false">
 	<label ref-type="src-label">
 		<position x="43.6635" y="-3.20001"/>
@@ -184,8 +179,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
 	 col-indexes="2" constr-indexes="3"
-	 src-table="public.&quot;Account_types&quot;"
-	 dst-table="public.&quot;Accounts&quot;"
+	 src-table="public.account_types"
+	 dst-table="public.accounts"
 	 src-required="true" dst-required="false">
 	<label ref-type="src-label">
 		<position x="27.7119" y="1.6"/>
@@ -202,33 +197,33 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-col-pattern="{sc}"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
-	 col-indexes="3" constr-indexes="1"
-	 src-table="public.&quot;Categories&quot;"
-	 dst-table="public.&quot;Transactions&quot;"
+	 col-indexes="2" constr-indexes="2"
+	 src-table="public.categories"
+	 dst-table="public.transactions"
 	 src-required="true" dst-required="false">
 	<label ref-type="src-label">
-		<position x="-36.9196" y="0.799988"/>
+		<position x="-25.6285" y="-2.20001"/>
 	</label>
 	<label ref-type="dst-label">
-		<position x="43.216" y="3.60001"/>
+		<position x="32.3701" y="26.6"/>
 	</label>
 	<label ref-type="name-label">
-		<position x="-103.274" y="17.4515"/>
+		<position x="-96.5243" y="13.9515"/>
 	</label>
 </relationship>
 
 <relationship name="Category_may_have_parent" type="rel1n"
-	 src-col-pattern="id_parent"
+	 src-col-pattern="parent_id"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
 	 src-fk-pattern="{st}_fk"
-	 col-indexes="1" constr-indexes="1"
-	 src-table="public.&quot;Categories&quot;"
-	 dst-table="public.&quot;Categories&quot;"
+	 col-indexes="2" constr-indexes="1"
+	 src-table="public.categories"
+	 dst-table="public.categories"
 	 src-required="false" dst-required="false">
 	<line>
-		<position x="1033" y="346.16"/>
-	<position x="1033" y="310"/>
-	<position x="948.667" y="310"/>
+		<position x="1032" y="346.16"/>
+	<position x="1032" y="310"/>
+	<position x="948" y="310"/>
 	</line>
 	<label ref-type="src-label">
 		<position x="15" y="23.24"/>
@@ -241,42 +236,34 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</label>
 </relationship>
 
-<constraint name="users_roles_fk" type="fk-constr"	 comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Users&quot;" table="public.&quot;Roles&quot;">
-	<columns names="id_user" ref-type="src-columns"/>
-	<columns names="id_user" ref-type="dst-columns"/>
-</constraint>
-<constraint name="Transaction_has_source" type="fk-constr"	 comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Accounts&quot;" table="public.&quot;Transactions&quot;">
-	<columns names="id_account_from" ref-type="src-columns"/>
-	<columns names="id_account" ref-type="dst-columns"/>
-</constraint>
-<constraint name="Transaction_has_destination" type="fk-constr"	 comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Accounts&quot;" table="public.&quot;Transactions&quot;">
-	<columns names="id_account_to" ref-type="src-columns"/>
-	<columns names="id_account" ref-type="dst-columns"/>
-</constraint>
-<relationship name="Transactions_belong_to_Accounts" type="relfk"
-	 src-table="public.&quot;Transactions&quot;"
-	 dst-table="public.&quot;Accounts&quot;"
-	 src-required="true" dst-required="true">
-	<line>
-		<position x="900" y="160"/>
-	</line>
+<relationship name="Transactions_belongs_to_Accounts" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="1" constr-indexes="4294967295,0"
+	 src-table="public.accounts"
+	 dst-table="public.transactions"
+	 src-required="true" dst-required="false">
 	<label ref-type="src-label">
-		<position x="-28.1981" y="-0.399994"/>
+		<position x="-3" y="-26.0265"/>
 	</label>
 	<label ref-type="dst-label">
-		<position x="2.99994" y="-26.5975"/>
+		<position x="-2.19995" y="-28.9118"/>
 	</label>
 	<label ref-type="name-label">
-		<position x="81.7257" y="1.30147"/>
+		<position x="60.7257" y="4.95148"/>
 	</label>
+	<special-pk-cols indexes="0"/>
 </relationship>
 
+<constraint name="users_roles_fk" type="fk-constr"	 comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.roles">
+	<columns names="user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
 <relationship name="Users_have_Roles" type="relfk"
-	 src-table="public.&quot;Roles&quot;"
-	 dst-table="public.&quot;Users&quot;"
+	 src-table="public.roles"
+	 dst-table="public.users"
 	 src-required="true" dst-required="true">
 	<label ref-type="name-label">
 		<position x="0" y="0"/>
