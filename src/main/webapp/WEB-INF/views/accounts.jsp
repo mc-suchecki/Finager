@@ -28,19 +28,19 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Balance</th>
-								<th>Currency</th>
+								<th class="text-center">Name</th>
+								<th class="text-center">Type</th>
+								<th class="text-center">Balance</th>
+								<th class="text-center">Currency</th>
 								<th class="text-center">Actions</th>
 							<tr>
 						</thead>
 						<tbody>
 							<c:forEach var="account" items="${accountsList}">
 								<tr>
-									<td>${account.name}</td>
-									<td>${account.type}</td>
-									<td>${account.balance}</td>
+									<td class="text-center">${account.name}</td>
+									<td class="text-center">${account.type}</td>
+									<td class="text-right">${account.balance}</td>
 									<td>${account.currency}</td>
 									<td class="text-center">
 										<div class="btn-group text-center">

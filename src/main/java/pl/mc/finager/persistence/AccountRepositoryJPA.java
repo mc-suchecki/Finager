@@ -1,6 +1,10 @@
 package pl.mc.finager.persistence;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Currency;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,24 +52,28 @@ public class AccountRepositoryJPA implements AccountRepository {
 	public List<AccountVO> getAccountsForUserID(final long userID) {
 		logger.info("Method getAccountsForUserID invoked");
 		Query query = em.createQuery("SELECT new pl.mc.finager.model.vo.AccountVO("
-								+ "account.name, account.type, account.currency, account.balance) "
-								+ "FROM AccountPO account WHERE account.userID = :id", AccountVO.class);
+				+ "account.name, accountType.name, account.currency, account.balance) "
+				+ "FROM AccountPO account "
+				+ "JOIN AccountTypePO accountType ON account.type = accountType.id "
+				+ "WHERE account.userID = :id", AccountVO.class);
 		query.setParameter("id", userID);
 		return (List<AccountVO>) query.getResultList();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public String getTotalCashForUserID(final long userID) {
+	public Map<Currency, BigDecimal> getTotalCashForUserID(final long userID) {
 		logger.info("Method getTotalCashForUserID invoked");
 		Query query = em.createQuery("SELECT account.currency, sum(account.balance) "
 				+ "FROM AccountPO account WHERE account.userID = :id GROUP BY account.currency", Map.class);
 		query.setParameter("id", userID);
 		List<Object[]> results = query.getResultList();
-		String description = new String();
+		Map<Currency, BigDecimal> totalMap = new LinkedHashMap<Currency, BigDecimal>();
 		for (Object[] result : results) {
-			description += result[1] + " " + result[0] + " ";
+			Currency currency = Currency.getInstance((String) result[0]);
+			BigDecimal moneyAmount = (BigDecimal) result[1];
+			totalMap.put(currency, moneyAmount.setScale(currency.getDefaultFractionDigits(), RoundingMode.UNNECESSARY));
 		}
-		return description;
+		return totalMap;
 	}
 }

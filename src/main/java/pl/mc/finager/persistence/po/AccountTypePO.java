@@ -1,6 +1,3 @@
-/**
- * 
- */
 package pl.mc.finager.persistence.po;
 
 import javax.persistence.Column;

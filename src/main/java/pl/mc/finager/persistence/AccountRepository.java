@@ -1,6 +1,7 @@
 package pl.mc.finager.persistence;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +28,9 @@ public interface AccountRepository {
 	List<AccountVO> getAccountsForUserID(long userID);
 
 	/**
-	 * Returns map that maps Currency ISO code to total amount of money
+	 * Returns map that maps Currency to total amount of money
 	 * that particular user have in that particular currency on his accounts.
 	 * @param userID ID of the user who is the owner of the accounts
 	 */
-	String getTotalCashForUserID(long userID);
+	Map<Currency, BigDecimal> getTotalCashForUserID(long userID);
 }

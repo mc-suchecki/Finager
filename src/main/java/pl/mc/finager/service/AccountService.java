@@ -1,5 +1,7 @@
 package pl.mc.finager.service;
 
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +47,7 @@ public class AccountService {
 		return accountRepository.getAccountsForUserID(userRepository.getUserID(userEmail));
 	}
 	
-	public String getTotalCashAmountForTheUser(final String userEmail) {
+	public Map<Currency, BigDecimal> getTotalCashAmountForTheUser(final String userEmail) {
 		return accountRepository.getTotalCashForUserID(userRepository.getUserID(userEmail));
 	}
 }

@@ -1,7 +1,10 @@
 package pl.mc.finager.web;
 
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -32,32 +35,27 @@ public class AccountsController {
 	
 	/** Simply selects the accounts to render by returning its name. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public String accounts(Model model, Principal principal) {
+	public String accounts(Model model, Principal principal, Locale locale) {
 		logger.info("AccountsController");
 		String name = principal.getName();
-		model.addAttribute("username", name);
-		String activeView = new String("accounts");
-		model.addAttribute("activeView", activeView);
-		model.addAttribute("AccountFO", new AccountFO());
-		model.addAttribute("accountsList", accountService.getAccountsOfTheUser(name));
-		model.addAttribute("totalCash", accountService.getTotalCashAmountForTheUser(name));
-		return activeView;
+		model = populateModelAttributes(model, name, locale);
+		return "accounts";
 	}
 
 	/** Adds new account or edits already created one. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
 	public String addOrEditAccount(@ModelAttribute("AccountFO") AccountFO account,
-		BindingResult result, SessionStatus status, Model model, Principal principal) {
+		BindingResult result, SessionStatus status, Model model, Principal principal, Locale locale) {
 		logger.info("AccountsController");
+
+		// add new account and complete request
 		String name = principal.getName();
-		model.addAttribute("username", name);
-		String activeView = new String("accounts");
-		model.addAttribute("activeView", activeView);
 		accountService.addNewAccount(account, name);
-		status.setComplete();
 		model.addAttribute("accountAdded", true);
-		model.addAttribute("accountsList", accountService.getAccountsOfTheUser(name));
-		return activeView;
+		status.setComplete();
+
+		model = populateModelAttributes(model, name, locale);
+		return "accounts";
 	}
 
 	/** Downloads list of the available account types from the database. */
@@ -70,5 +68,25 @@ public class AccountsController {
 	@ModelAttribute("currenciesList")
 	public List<String> populateCurrenciesList() {
 		return accountService.getAllCurrencies();
+	}
+	
+	/** Adds attributes necessary for accounts view. */
+	private Model populateModelAttributes(Model model, final String username, final Locale locale) {
+		String activeView = new String("accounts");
+		model.addAttribute("activeView", activeView);
+		model.addAttribute("username", username);
+		model.addAttribute("AccountFO", new AccountFO());
+		model.addAttribute("accountsList", accountService.getAccountsOfTheUser(username));
+		model.addAttribute("totalCash", formatTotalCash(accountService.getTotalCashAmountForTheUser(username), locale));	
+		return model;
+	}
+	
+	/** Creates the String that displays total amount of cash on all of User Accounts. */
+	private String formatTotalCash(Map<Currency, BigDecimal> totalMap, final Locale locale) {
+		String formattedString = new String();
+		for (Map.Entry<Currency, BigDecimal> entry : totalMap.entrySet()) {
+			formattedString += entry.getValue().toPlainString() + " " + entry.getKey().getCurrencyCode() + "  ";
+		}
+		return formattedString;
 	}
 }
