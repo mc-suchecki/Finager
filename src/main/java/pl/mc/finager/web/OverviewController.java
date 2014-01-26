@@ -22,6 +22,7 @@ public class OverviewController {
 	@RequestMapping(value = {"/","/overview"}, method = RequestMethod.GET)
 	public String overview(Model model, Principal principal) {
 		logger.info("OverviewController");
+		// FIXME - here could be NullPointer when cookie expired!
 		String name = principal.getName();
 		model.addAttribute("username", name);
 		String activeView = new String("overview");

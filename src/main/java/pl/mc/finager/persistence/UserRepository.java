@@ -12,16 +12,16 @@ import pl.mc.finager.model.vo.UserVO;
 public interface UserRepository {
 
 	/**
-	 * Finds User with the provided ID.
-	 * @param id of the User to find
+	 * Returns ID of the user with the provided e-mail address.
+	 * @param e-mail of the User to find
 	 * @return null if User was not found
 	 * @throws DataAccessException when there is a problem with a connection
 	 */
-	UserVO findByID(long id) throws DataAccessException;
+	long getUserID(String email) throws DataAccessException;
 
 	/**
 	 * Finds User with the provided e-mail address.
-	 * @param email of the User to find
+	 * @param e-mail of the User to find
 	 * @return null if User was not found
 	 * @throws DataAccessException when there is a problem with a connection
 	 */

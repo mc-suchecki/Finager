@@ -18,7 +18,7 @@
 				<c:if test="${not empty error}">
 					<div class="alert alert-danger">
 						<!-- TODO: fix the spring security message -->
-						<strong>Oh snap!</strong> ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message} Please try again.
+						<strong>Oh snap!</strong> ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"]} Please try again.
 					</div>
 				</c:if>
 
@@ -30,7 +30,7 @@
 
 				<c:if test="${not empty registered}">
 					<div class="alert alert-success">
-						<strong>Well done!</strong> New user account had <br> been created! You can now log in.
+						<strong>Well done!</strong> New user account has <br> been created! You can now log in.
 					</div>
 				</c:if>
 

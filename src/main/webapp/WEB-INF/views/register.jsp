@@ -25,7 +25,7 @@
 							</div>
 						</c:if>
 					</spring:bind>
-					<form:input path="name" type="text" class="form-control" placeholder="Name" autofocus="autoficus" /> <br>
+					<form:input path="name" type="text" class="form-control" placeholder="Name" autofocus="autofocus" /> <br>
 					<form:input path="surname" type="text" class="form-control" placeholder="Surname" /> <br>
 					<form:input path="email" type="email" class="form-control" placeholder="E-mail address" /> <br>
 					<form:input path="password" type="password" class="form-control" placeholder="Password" /> <br>

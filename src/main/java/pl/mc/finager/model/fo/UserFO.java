@@ -13,10 +13,6 @@ public class UserFO {
 
 	/**
 	 * Default constructor.
-	 * @param email
-	 * @param password
-	 * @param name
-	 * @param surname
 	 */
 	public UserFO() {
 		this.email = "";

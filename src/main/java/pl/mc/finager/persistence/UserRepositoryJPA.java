@@ -35,13 +35,11 @@ public class UserRepositoryJPA implements UserRepository {
 	private PasswordEncoder passwordEncoder = new ShaPasswordEncoder(256);
 
 	@Override
-	public UserVO findByID(final long id) throws DataAccessException {
-		logger.info("Method findByID invoked");
-		Query query = this.em.createQuery("SELECT new pl.mc.finager.model.vo.UserVO("
-					+ "userPO.email, userPO.passwordHash, userPO.name, userPO.surname)"
-					+ " FROM UserPO userPO WHERE UserPO.id = :id", UserVO.class);
-		query.setParameter("id", id);
-		return (UserVO) query.getSingleResult();
+	public long getUserID(final String email) throws DataAccessException {
+		logger.info("Method getUserID invoked");
+		Query query = this.em.createQuery("SELECT user.id FROM UserPO user WHERE user.email = :email", Long.class);
+		query.setParameter("email", email);
+		return (Long) query.getSingleResult();
 	}
 
 	@Override

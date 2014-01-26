@@ -96,15 +96,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="numeric" length="12" precision="4"/>
 		<comment><![CDATA[Balance in account after the transaction.]]></comment>
 	</column>
-	<column name="description">
-		<type name="varchar" length="255"/>
+	<column name="transaction_date" not-null="true">
+		<type name="date"/>
 	</column>
 	<column name="value_transferred" not-null="true">
 		<type name="numeric" length="12" precision="4"/>
 		<comment><![CDATA[Money amount transferred within the transaction.]]></comment>
 	</column>
-	<column name="transaction_date" not-null="true">
-		<type name="date"/>
+	<column name="description">
+		<type name="varchar" length="255"/>
 	</column>
 	<constraint name="transactions_pk" type="pk-constr" factor="10" table="public.transactions">
 		<columns names="transaction_number" ref-type="src-columns"/>
