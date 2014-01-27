@@ -50,9 +50,10 @@
 											<button type="button" class="btn btn-default btn-sm">
 												<span class="glyphicon glyphicon-list"></span> Transactions
 											</button>
-											<button type="button" class="btn btn-default btn-sm">
-												<span class="glyphicon glyphicon-remove"></span> Remove
-											</button>
+											<a role="button" class="btn btn-default btn-sm"
+												href="${pageContext.request.contextPath}/accounts/delete/${account.id}.json"> <span
+												class="glyphicon glyphicon-remove"></span> Remove
+											</a>
 										</div>
 									</td>
 								</tr>
@@ -105,8 +106,10 @@
 						</spring:bind>
 						<fieldset>
 							<legend>Basic information</legend>
-							<c:set var="nameErrors"><form:errors path="name"/></c:set>
-    						<div class="form-group ${not empty nameErrors ? 'has-error' : ''}">
+							<c:set var="nameErrors">
+								<form:errors path="name" />
+							</c:set>
+							<div class="form-group ${not empty nameErrors ? 'has-error' : ''}">
 								<label>Account name</label>
 								<form:errors path="name" cssClass="control-label" />
 								<form:input path="name" type="text" class="form-control" placeholder="Enter account name here"
@@ -120,8 +123,10 @@
 						<hr />
 						<fieldset>
 							<legend>Monetary data</legend>
-							<c:set var="balanceErrors"><form:errors path="balance"/></c:set>
-    						<div class="form-group ${not empty balanceErrors ? 'has-error' : ''}">
+							<c:set var="balanceErrors">
+								<form:errors path="balance" />
+							</c:set>
+							<div class="form-group ${not empty balanceErrors ? 'has-error' : ''}">
 								<label>Initial balance</label>
 								<form:input path="balance" class="form-control" placeholer="0.00" />
 							</div>
@@ -145,6 +150,38 @@
 
 	<%@ include file="/WEB-INF/views/common/footer.jsp"%>
 	<%@ include file="/WEB-INF/views/common/includes.jsp"%>
+
+	<!-- Custom scripts - account removal using AJAX and jQuery -->
+	<script>
+		$(document).ready(function() {
+			var deleteLink = $("a:contains('Remove')");
+			$(deleteLink).click(function(event) {
+				var conBox = confirm("Are you sure you want to delete this account?");
+				if (conBox) {
+					$.ajax({
+						url : $(event.target).attr("href"),
+						type : "DELETE",
+
+						beforeSend : function(xhr) {
+							xhr.setRequestHeader("Accept", "application/json");
+							xhr.setRequestHeader("Content-Type", "application/json");
+						},
+
+						success : function() {
+							var tr = $(event.target).closest("tr");
+							tr.css("background-color", "#f2dede");
+							tr.fadeIn(2000).fadeOut(1000, function() {
+								tr.remove();
+							})
+						}
+					});
+				} else {
+					event.preventDefault();
+				}
+				event.preventDefault();
+			});
+		});
+	</script>
 
 </body>
 

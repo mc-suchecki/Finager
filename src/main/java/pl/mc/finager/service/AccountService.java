@@ -43,6 +43,10 @@ public class AccountService {
 		accountRepository.addNewAccount(account, userRepository.getUserID(userEmail));
 	}
 	
+	public void removeAccount(final long accountID, final String userEmail) {
+		accountRepository.removeAccount(accountID, userRepository.getUserID(userEmail));
+	}
+	
 	public List<AccountVO> getAccountsOfTheUser(final String userEmail) {
 		return accountRepository.getAccountsForUserID(userRepository.getUserID(userEmail));
 	}

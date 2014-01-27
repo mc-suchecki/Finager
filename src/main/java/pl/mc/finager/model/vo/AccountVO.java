@@ -10,6 +10,7 @@ import java.util.Currency;
  */
 public class AccountVO {
 
+	private long id;
 	private String name;
 	private String type;
 	private Currency currency;
@@ -19,6 +20,7 @@ public class AccountVO {
 	 * Default constructor.
 	 */
 	public AccountVO() {
+		this.id = 0;
 		this.name = "";
 		this.type = "";
 		this.currency = Currency.getInstance("EUR");
@@ -27,16 +29,32 @@ public class AccountVO {
 
 	/**
 	 * Basic constructor.
+	 * @param id
 	 * @param name
 	 * @param type
 	 * @param currency
 	 * @param balance
 	 */
-	public AccountVO(final String name, final String type, final String currencyCode, final BigDecimal balance) {
+	public AccountVO(final long id, final String name, final String type, final String currencyCode, final BigDecimal balance) {
+		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.currency = Currency.getInstance(currencyCode);
 		this.balance = balance;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	/**

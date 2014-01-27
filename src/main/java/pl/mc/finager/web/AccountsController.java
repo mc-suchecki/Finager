@@ -12,12 +12,15 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 
 import pl.mc.finager.model.fo.AccountFO;
@@ -37,18 +40,28 @@ public class AccountsController {
 	
 	/** Simply selects the accounts to render by returning its name. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public String accounts(Model model, Principal principal, Locale locale) {
-		logger.info("AccountsController");
+	public String showAccounts(Model model, Principal principal, Locale locale) {
+		logger.info("AccountsController.showAccounts");
 		String name = principal.getName();
 		model = populateModelAttributes(model, name, locale);
 		return "accounts";
+	}
+
+	/** Removes account from the database using JSON and AJAX. */
+	@ResponseBody
+	@RequestMapping(value="/accounts/delete/{accountID}", method=RequestMethod.DELETE,
+      produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void deleteAccount(@PathVariable long accountID, Principal principal) {
+		logger.info("AccountsController.deleteAccount");
+		String name = principal.getName();
+		accountService.removeAccount(accountID, name);
 	}
 
 	/** Adds new account or edits already created one. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
 	public String addOrEditAccount(@ModelAttribute("AccountFO") @Valid AccountFO account,
 		BindingResult result, SessionStatus status, Model model, Principal principal, Locale locale) {
-		logger.info("AccountsController");
+		logger.info("AccountsController.addOrEditAccount");
 
 		String name = principal.getName();
 

@@ -22,6 +22,13 @@ public interface AccountRepository {
 	void addNewAccount(AccountFO account, long userID);
 
 	/**
+	 * Removes particular account from the database.
+	 * @param accountID ID of the account to delete
+	 * @param userID ID of the account owner
+	 */
+	void removeAccount(long accountID, long userID);
+
+	/**
 	 * Returns list of all accounts that belong to user with given ID.
 	 * @param userID ID of the user who is the owner of the accounts
 	 */
@@ -33,4 +40,5 @@ public interface AccountRepository {
 	 * @param userID ID of the user who is the owner of the accounts
 	 */
 	Map<Currency, BigDecimal> getTotalCashForUserID(long userID);
+
 }
