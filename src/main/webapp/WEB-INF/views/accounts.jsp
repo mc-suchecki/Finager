@@ -105,8 +105,10 @@
 						</spring:bind>
 						<fieldset>
 							<legend>Basic information</legend>
-							<div class="form-group">
+							<c:set var="nameErrors"><form:errors path="name"/></c:set>
+    						<div class="form-group ${not empty nameErrors ? 'has-error' : ''}">
 								<label>Account name</label>
+								<form:errors path="name" cssClass="control-label" />
 								<form:input path="name" type="text" class="form-control" placeholder="Enter account name here"
 									autofocus="autofocus" />
 							</div>
@@ -118,7 +120,8 @@
 						<hr />
 						<fieldset>
 							<legend>Monetary data</legend>
-							<div class="form-group">
+							<c:set var="balanceErrors"><form:errors path="balance"/></c:set>
+    						<div class="form-group ${not empty balanceErrors ? 'has-error' : ''}">
 								<label>Initial balance</label>
 								<form:input path="balance" class="form-control" placeholer="0.00" />
 							</div>

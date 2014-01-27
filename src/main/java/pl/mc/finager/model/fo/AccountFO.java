@@ -2,15 +2,24 @@ package pl.mc.finager.model.fo;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.Digits;
+
+import org.hibernate.validator.constraints.Length;
+
 /**
  * FormObject used to retrieve Account details from web interface.
  * @author mc
  */
 public class AccountFO {
 
+	@Length(min=2, max=64)
 	private String name;
 	private Integer type;
+
+	@Length(min=3, max=3)
 	private String currency;
+
+	@Digits(integer=8, fraction=4)
 	private BigDecimal balance;
 
 	/**

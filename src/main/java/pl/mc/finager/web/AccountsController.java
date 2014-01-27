@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,15 +46,21 @@ public class AccountsController {
 
 	/** Adds new account or edits already created one. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
-	public String addOrEditAccount(@ModelAttribute("AccountFO") AccountFO account,
+	public String addOrEditAccount(@ModelAttribute("AccountFO") @Valid AccountFO account,
 		BindingResult result, SessionStatus status, Model model, Principal principal, Locale locale) {
 		logger.info("AccountsController");
 
-		// add new account and complete request
 		String name = principal.getName();
-		accountService.addNewAccount(account, name);
-		model.addAttribute("accountAdded", true);
-		status.setComplete();
+
+		if (result.hasErrors()) {
+			model = populateModelAttributes(model, name, locale);
+			return "accounts";
+		} else {
+			// add new account and complete request
+			accountService.addNewAccount(account, name);
+			model.addAttribute("accountAdded", true);
+			status.setComplete();
+		}
 
 		model = populateModelAttributes(model, name, locale);
 		return "accounts";

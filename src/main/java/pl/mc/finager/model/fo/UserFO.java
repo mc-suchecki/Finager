@@ -1,14 +1,25 @@
 package pl.mc.finager.model.fo;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+
 /**
  * FormObject used to retrieve User details from web interface.
  * @author mc
  */
 public class UserFO {
 
+	@Email
+	@Length(min=3, max=64)
 	private String email;
+
+	@Length(min=5, max=64)
 	private String password;
+
+	@Length(min=2, max=64)
 	private String name;
+
+	@Length(min=2, max=64)
 	private String surname;
 
 	/**

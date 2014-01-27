@@ -1,5 +1,7 @@
 package pl.mc.finager.web;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
@@ -54,11 +56,15 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String registerUser(@ModelAttribute("UserFO") UserFO user,
+	public String registerUser(@ModelAttribute("UserFO") @Valid UserFO user,
 		BindingResult result, SessionStatus status, Model model) {
-		userService.registerNewUser(user);
-		status.setComplete();
-		model.addAttribute("registered", "true");
-		return "login";
+		if (result.hasErrors()) {
+			return "register";
+		} else {
+			userService.registerNewUser(user);
+			status.setComplete();
+			model.addAttribute("registered", "true");
+			return "login";
+		}
 	}
 }
