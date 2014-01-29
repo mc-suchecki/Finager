@@ -92,16 +92,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="transaction_number" not-null="true">
 		<type name="bigserial"/>
 	</column>
-	<column name="account_balance_after" not-null="true">
-		<type name="numeric" length="12" precision="4"/>
-		<comment><![CDATA[Balance in account after the transaction.]]></comment>
-	</column>
 	<column name="transaction_date" not-null="true">
 		<type name="date"/>
 	</column>
 	<column name="value_transferred" not-null="true">
 		<type name="numeric" length="12" precision="4"/>
 		<comment><![CDATA[Money amount transferred within the transaction.]]></comment>
+	</column>
+	<column name="account_balance_after" not-null="true">
+		<type name="numeric" length="12" precision="4"/>
+		<comment><![CDATA[Balance in account after the transaction.]]></comment>
 	</column>
 	<column name="description">
 		<type name="varchar" length="255"/>

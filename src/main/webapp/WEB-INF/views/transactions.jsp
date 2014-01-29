@@ -123,6 +123,13 @@
 
 	<%@ include file="/WEB-INF/views/common/footer.jsp"%>
 	<%@ include file="/WEB-INF/views/common/includes.jsp"%>
+	
+	<script>
+		$(document).ready(function() {
+			//TODO uncomment this after solving the problem with bootstrap-datepicker
+			//$('.input-daterange').datepicker({});
+		});
+	</script>
 
 </body>
 

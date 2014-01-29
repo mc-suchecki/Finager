@@ -9,3 +9,5 @@
 <script src="${jQueryUiCore}"></script>
 <spring:url value="/webjars/jquery-ui/1.10.3/ui/jquery.ui.datepicker.js" var="jQueryUiDatePicker"/>
 <script src="${jQueryUiDatePicker}"></script>
+<spring:url value="/webjars/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js" var="bootstrapDatepicker" />
+<script src="${bootstrapDatepicker}"></script>

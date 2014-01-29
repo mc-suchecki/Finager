@@ -2,3 +2,12 @@
 .spacer {
   margin-top: 100px;
 }
+
+/* Chart legend classes - used in reports page. */
+.chart-legend .chart-title {
+  display: block;
+  margin: 3px;
+  border-style: solid;
+  border-width: 0 0 0 10px;
+  padding: 0 10px;
+} 

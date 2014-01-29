@@ -33,14 +33,15 @@ import pl.mc.finager.service.AccountService;
 @Controller
 public class AccountsController {
 	
+	/** Logger instance. */
 	private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
 	
 	@Autowired
 	private AccountService accountService;
 	
-	/** Simply selects the accounts to render by returning its name. */
+	/** Returns accounts view. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public String showAccounts(Model model, Principal principal, Locale locale) {
+	public String showAccounts(Model model, final Principal principal, final Locale locale) {
 		logger.info("AccountsController.showAccounts");
 		String name = principal.getName();
 		model = populateModelAttributes(model, name, locale);
@@ -51,7 +52,7 @@ public class AccountsController {
 	@ResponseBody
 	@RequestMapping(value="/accounts/delete/{accountID}", method=RequestMethod.DELETE,
       produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void deleteAccount(@PathVariable long accountID, Principal principal) {
+	public void deleteAccount(@PathVariable final long accountID, final Principal principal) {
 		logger.info("AccountsController.deleteAccount");
 		String name = principal.getName();
 		accountService.removeAccount(accountID, name);
@@ -60,7 +61,7 @@ public class AccountsController {
 	/** Adds new account or edits already created one. */
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
 	public String addOrEditAccount(@ModelAttribute("AccountFO") @Valid AccountFO account,
-		BindingResult result, SessionStatus status, Model model, Principal principal, Locale locale) {
+		BindingResult result, SessionStatus status, Model model, final Principal principal, final Locale locale) {
 		logger.info("AccountsController.addOrEditAccount");
 
 		String name = principal.getName();
