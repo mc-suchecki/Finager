@@ -2,6 +2,7 @@ package pl.mc.finager.service;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,15 @@ public class AccountService {
 	
 	public List<AccountVO> getAccountsOfTheUser(final String userEmail) {
 		return accountRepository.getAccountsForUserID(userRepository.getUserID(userEmail));
+	}
+	
+	public Map<Long, String> getAvailableAccountsMap(final String userEmail) {
+		List<AccountVO> accountsList = accountRepository.getAccountsForUserID(userRepository.getUserID(userEmail));
+		Map<Long, String> accountsMap = new LinkedHashMap<Long, String>();
+		for (AccountVO account : accountsList) {
+			accountsMap.put(account.getId(), account.getName());
+		}
+		return accountsMap;
 	}
 	
 	public Map<Currency, BigDecimal> getTotalCashAmountForTheUser(final String userEmail) {

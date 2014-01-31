@@ -18,13 +18,15 @@
 	<link href="${finagerCSS}" rel="stylesheet" />
 
 	<!-- Twitter Bootstrap -->
-	<spring:url value="/webjars/bootstrap/3.0.3/css/bootstrap.min.css" var="bootstrapCSS" />
+	<spring:url value="/webjars/bootstrap/3.1.0/css/bootstrap.min.css" var="bootstrapCSS" />
 	<link href="${bootstrapCSS}" rel="stylesheet" />
-	<spring:url value="/webjars/bootstrap/3.0.3/css/bootstrap-theme.min.css" var="bootstrapCSStheme" />
+	<spring:url value="/webjars/bootstrap/3.1.0/css/bootstrap-theme.min.css" var="bootstrapCSStheme" />
 	<link href="${bootstrapCSStheme}" rel="stylesheet" />
 	
-	<!-- jQuery UI -->
-    <spring:url value="/webjars/jquery-ui/1.10.3/themes/base/jquery-ui.css" var="jQueryUIcss"/>
-    <link href="${jQueryUIcss}" rel="stylesheet"></link>
+	<!-- Bootstrap Datepicker -->
+	<spring:url value="/webjars/bootstrap-datepicker/1.3.0/css/datepicker.css" var="bootstrapDatepickerCSS" />
+    <link href="${bootstrapDatepickerCSS}" rel="stylesheet"></link>
+	<spring:url value="/webjars/bootstrap-datepicker/1.3.0/css/datepicker3.css" var="bootstrapDatepicker3CSS" />
+    <link href="${bootstrapDatepicker3CSS}" rel="stylesheet"></link>
 </head>
 

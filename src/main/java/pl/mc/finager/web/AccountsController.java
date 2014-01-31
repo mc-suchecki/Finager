@@ -33,7 +33,6 @@ import pl.mc.finager.service.AccountService;
 @Controller
 public class AccountsController {
 	
-	/** Logger instance. */
 	private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
 	
 	@Autowired
@@ -66,15 +65,16 @@ public class AccountsController {
 
 		String name = principal.getName();
 
+		// check for errors and abort if any
 		if (result.hasErrors()) {
 			model = populateModelAttributes(model, name, locale);
 			return "accounts";
-		} else {
-			// add new account and complete request
-			accountService.addNewAccount(account, name);
-			model.addAttribute("accountAdded", true);
-			status.setComplete();
 		}
+
+		// add new account and complete request
+		accountService.addNewAccount(account, name);
+		model.addAttribute("accountAdded", true);
+		status.setComplete();
 
 		model = populateModelAttributes(model, name, locale);
 		return "accounts";

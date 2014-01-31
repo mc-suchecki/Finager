@@ -53,8 +53,8 @@
 			});
 		}
 		$(document).ready(function() {
-			//TODO uncomment this after solving the problem with bootstrap-datepicker
-			//$('.input-daterange').datepicker({});
+			// init bootstrap-datepicker
+			$('.input-daterange').datepicker({});
 
 			// mockup data - TODO remove
 			var data = [ {
