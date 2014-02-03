@@ -54,7 +54,9 @@
 		}
 		$(document).ready(function() {
 			// init bootstrap-datepicker
-			$('.input-daterange').datepicker({});
+			$('.input-daterange').datepicker({
+				format: "dd/mm/yyyy"
+			});
 
 			// mockup data - TODO remove
 			var data = [ {

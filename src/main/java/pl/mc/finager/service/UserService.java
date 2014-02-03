@@ -20,6 +20,7 @@ import pl.mc.finager.persistence.UserRepository;
  * UserDetailsService interface in order to serve as a authentication provider for Spring Security.
  * @author mc
  */
+@SuppressWarnings("deprecation")
 @Service
 public class UserService implements UserDetailsService {
 
@@ -27,7 +28,6 @@ public class UserService implements UserDetailsService {
 	private UserRepository userRepository;
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public final UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
 		// email is used as a username in the application
 		UserVO user = userRepository.findByEmail(username);

@@ -86,4 +86,26 @@ public class AccountRepositoryJPA implements AccountRepository {
 		}
 		return totalMap;
 	}
+
+	@Override
+	public AccountVO getAccountWithID(long accountID) {
+		logger.info("Method getAccountWithID invoked");
+		Query query = em.createQuery("SELECT new pl.mc.finager.model.vo.AccountVO("
+				+ "account.id, account.name, accountType.name, account.currency, "
+				+ "account.balance) FROM AccountPO account "
+				+ "JOIN AccountTypePO accountType ON account.type = accountType.id "
+				+ "WHERE account.id = :id", AccountVO.class);
+		query.setParameter("id", accountID);
+		return (AccountVO) query.getSingleResult();
+	}
+
+	@Override
+	public void setAccountBalance(final Integer accountID, final BigDecimal newBalance) {
+		logger.info("Method setAccountBalance invoked");
+		Query query = em.createQuery("UPDATE AccountPO account SET account.balance = :balance "
+				+ "WHERE account.id = :accountID");
+		query.setParameter("accountID", accountID);
+		query.setParameter("balance", newBalance);
+		query.executeUpdate();
+	}
 }

@@ -51,8 +51,8 @@
 												<span class="glyphicon glyphicon-list"></span> Transactions
 											</button>
 											<a role="button" class="btn btn-default btn-sm"
-												href="${pageContext.request.contextPath}/accounts/delete/${account.id}.json"> <span
-												class="glyphicon glyphicon-remove"></span> Remove
+												href="${pageContext.request.contextPath}/accounts/delete/${account.id}.json">
+												<span class="glyphicon glyphicon-remove"></span> Remove
 											</a>
 										</div>
 									</td>

@@ -41,4 +41,17 @@ public interface AccountRepository {
 	 */
 	Map<Currency, BigDecimal> getTotalCashForUserID(long userID);
 
+	/**
+	 * Returns account with given ID - if found.
+	 * @param accountToID ID of the searched account
+	 * @return account with given ID
+	 */
+	AccountVO getAccountWithID(long accountID);
+
+	/**
+	 * Modifies particular account balance in the database.
+	 * @param accountID ID of the account to modify
+	 * @param newBalance new account balance
+	 */
+	void setAccountBalance(Integer accountID, BigDecimal newBalance);
 }

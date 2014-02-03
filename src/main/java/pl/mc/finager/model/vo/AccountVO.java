@@ -100,10 +100,19 @@ public class AccountVO {
 	}
 
 	/**
-	 * @return the balance
+	 * TODO fix this - this is crap!
+	 * @return properly formatted string representing account balance
 	 */
 	public String getBalance() {
 		return balance.setScale(currency.getDefaultFractionDigits(), RoundingMode.UNNECESSARY).toPlainString();
+	}
+	
+	/**
+	 * TODO fix this - this is crap!
+	 * @return account balance
+	 */
+	public BigDecimal getBalanceNumber() {
+		return balance;
 	}
 
 	/**

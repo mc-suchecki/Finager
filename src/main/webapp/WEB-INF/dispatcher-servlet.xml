@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -11,7 +11,7 @@
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	<context:component-scan base-package="pl.mc.finager" />
 
-	<!-- Enables the Spring MVC @Controller programming model -->
+	<!-- Enables Spring MVC annotations -->
 	<annotation-driven />
 
 	<!-- Handles HTTP GET requests for /resources/** by serving up static resources in the /resources directory -->
@@ -33,47 +33,53 @@
 			</beans:list>
 		</beans:property>
 	</beans:bean>
-	
+
 	<!-- Persistence -->
 	<!-- Data source -->
-	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-			destroy-method="close">
-			<beans:property name="driverClassName" value="org.postgresql.Driver" />
-			<beans:property name="url" value="jdbc:postgresql://localhost:5432/finager" />
-			<beans:property name="username" value="finager" />
-			<beans:property name="password" value="finager_db_password" />
+	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<beans:property name="driverClassName" value="org.postgresql.Driver" />
+		<beans:property name="url" value="jdbc:postgresql://localhost:5432/finager" />
+		<beans:property name="username" value="finager" />
+		<beans:property name="password" value="finager_db_password" />
 	</beans:bean>
-	
+
 	<!-- Entity manger -->
-	<beans:bean id="entityManagerFactory"
-			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-			<beans:property name="persistenceUnitName" value="persistenceUnit" />
-			<beans:property name="dataSource" ref="dataSource" />
-			<beans:property name="packagesToScan" value="pl.mc.finager" />
-			<beans:property name="jpaVendorAdapter">
-					<beans:bean
-							class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
-							<beans:property name="databasePlatform" value="org.eclipse.persistence.platform.database.PostgreSQLPlatform" />
-							<beans:property name="showSql" value="true" />
-							<beans:property name="generateDdl" value="false" />
-					</beans:bean>
-			</beans:property>
-			<beans:property name="jpaPropertyMap">
-					<beans:props>
-							<beans:prop key="eclipselink.weaving">false</beans:prop>
-							<beans:prop key="eclipselink.logging.level">severe</beans:prop>
-							<beans:prop key="eclipselink.logging.level.sql">fine</beans:prop>
-							<beans:prop key="eclipselink.logging.parameters">true</beans:prop>
-							<beans:prop key="eclipselink.ddl-generation">none</beans:prop>
-							<beans:prop key="eclipselink.query-results-cache">false</beans:prop>
-							<beans:prop key="eclipselink.cache.shared.default">false</beans:prop>
-					</beans:props>
-			</beans:property>
+	<beans:bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<beans:property name="persistenceUnitName" value="persistenceUnit" />
+		<beans:property name="dataSource" ref="dataSource" />
+		<beans:property name="packagesToScan" value="pl.mc.finager" />
+		<beans:property name="jpaVendorAdapter">
+			<beans:bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
+				<beans:property name="databasePlatform" value="org.eclipse.persistence.platform.database.PostgreSQLPlatform" />
+				<beans:property name="showSql" value="true" />
+				<beans:property name="generateDdl" value="false" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="jpaPropertyMap">
+			<beans:props>
+				<beans:prop key="eclipselink.weaving">false</beans:prop>
+				<beans:prop key="eclipselink.logging.level">severe</beans:prop>
+				<beans:prop key="eclipselink.logging.level.sql">fine</beans:prop>
+				<beans:prop key="eclipselink.logging.parameters">true</beans:prop>
+				<beans:prop key="eclipselink.ddl-generation">none</beans:prop>
+				<beans:prop key="eclipselink.query-results-cache">false</beans:prop>
+				<beans:prop key="eclipselink.cache.shared.default">false</beans:prop>
+			</beans:props>
+		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-			<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
 	</beans:bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<beans:bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></beans:bean>
+	<beans:bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<beans:property name="messageConverters">
+			<beans:list>
+				<beans:ref bean="jacksonMessageConverter" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
 
 </beans:beans>

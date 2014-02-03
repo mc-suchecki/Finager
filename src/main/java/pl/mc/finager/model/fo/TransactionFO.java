@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -15,8 +15,12 @@ import org.hibernate.validator.constraints.Length;
  */
 public class TransactionFO {
 
-	@Past
+	@NotNull
 	private Date date;
+
+	@Min(0)
+	@Digits(integer=8, fraction=4)
+	private BigDecimal value;
 
 	@NotNull
 	private Integer categoryID;
@@ -24,21 +28,18 @@ public class TransactionFO {
 	private Integer accountToID;
 	private Integer accountFromID;
 
-	@Digits(integer=8, fraction=4)
-	private BigDecimal value;
-
 	@Length(min=0, max=255)
 	private String description;
+	
+	/** These fields are set by TransactionService. */
+	private BigDecimal accountToPreviousBalance;
+	private BigDecimal accountFromPreviousBalance;
+
 
 	/**
 	 * Default constructor.
 	 */
 	public TransactionFO() {
-		this.date = new Date();
-		this.categoryID = null;
-		this.accountToID = null;
-		this.accountFromID = null;
-		this.value = new BigDecimal(0);
 	}
 
 	/**
@@ -123,6 +124,34 @@ public class TransactionFO {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the accountToPreviousBalance
+	 */
+	public BigDecimal getAccountToPreviousBalance() {
+		return accountToPreviousBalance;
+	}
+
+	/**
+	 * @param accountToPreviousBalance the accountToPreviousBalance to set
+	 */
+	public void setAccountToPreviousBalance(BigDecimal accountToPreviousBalance) {
+		this.accountToPreviousBalance = accountToPreviousBalance;
+	}
+
+	/**
+	 * @return the accountFromPreviousBalance
+	 */
+	public BigDecimal getAccountFromPreviousBalance() {
+		return accountFromPreviousBalance;
+	}
+
+	/**
+	 * @param accountFromPreviousBalance the accountFromPreviousBalance to set
+	 */
+	public void setAccountFromPreviousBalance(BigDecimal accountFromPreviousBalance) {
+		this.accountFromPreviousBalance = accountFromPreviousBalance;
 	}
 	
 }

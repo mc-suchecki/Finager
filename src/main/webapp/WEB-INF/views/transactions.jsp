@@ -18,11 +18,16 @@
 			<div class="col-md-3">
 				<%@ include file="/WEB-INF/views/common/filter-form.jsp"%>
 				<button class="btn btn-primary btn-lg" data-toggle="modal"
-					data-target="#addNewTransaction">
+					data-target="#addNewTransactionModal">
 					<span class="glyphicon glyphicon-plus"></span> Add new transaction
 				</button>
 			</div>
 			<div class="col-md-9">
+				<!-- Transaction added prompt -->
+				<div class="alert alert-success alert-dismissable" id="transactionAddedPrompt">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<strong>Well done!</strong> Your transaction was successfully created!
+				</div>
 				<!-- Transactions table mockup -->
 				<div class="row">
 					<table class="table table-striped">
@@ -62,23 +67,19 @@
 	</div>
 
 	<!-- Add new transaction pop-up -->
-	<div class="modal fade" id="addNewTransaction" tabindex="-1"
+	<div class="modal fade" id="addNewTransactionModal" tabindex="-1"
 		role="dialog" aria-labelledby="addNewTransactionLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form:form id="form" method="POST" modelAttribute="TransactionFO" class="form-signin" role="form">
+				<form:form id="addNewTransactionForm" method="POST" modelAttribute="transactionFO" class="form-signin" role="form">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="addNewTransactionLabel">Add new transaction</h4>
 					</div>
 					<div class="modal-body">
-						<spring:bind path="*">
-							<c:if test="${status.error}">
-								<div class="alert alert-danger">
-									<strong>Oh snap!</strong> Form has errors. Please try again.
-								</div>
-							</c:if>
-						</spring:bind>
+						<div class="alert alert-danger">
+							<strong>Oh snap!</strong> Form has errors. Please try again.
+						</div>
 						<fieldset>
 							<div class="form-group">
 								<label>Transaction type</label>
@@ -88,12 +89,14 @@
 									<option class="form-control" value="transfer">Transfer</option>
 								</select>
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="accountFromIDGroup">
 								<label>Account from</label>
+								<div class="control-label"></div> <!-- errors are put here using JS -->
 								<form:select id="accountFrom" class="form-control" path="accountFromID" items="${userAccountsMap}" />
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="accountToIDGroup">
 								<label>Account to</label>
+								<div class="control-label"></div> <!-- errors are put here using JS -->
 								<form:select id="accountTo" class="form-control" path="accountToID" items="${userAccountsMap}" />
 							</div>
 						</fieldset>
@@ -101,17 +104,16 @@
 						<hr />
 
 						<fieldset>
-							<c:set var="valueErrors">
-								<form:errors path="value" />
-							</c:set>
-							<div class="form-group ${not empty valueErrors ? 'has-error' : ''}">
+							<div class="form-group" id="valueGroup">
 								<label>Transferred value</label>
-								<form:input path="value" class="form-control" placeholer="0.00" />
+								<div class="control-label"></div> <!-- errors are put here using JS -->
+								<form:input type="number" path="value" class="form-control" id="value" placeholder="0" step="any"/>
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="categoryIDGroup">
 								<label>Category</label>
+								<div class="control-label"></div> <!-- errors are put here using JS -->
 								<!-- creates two-level Categories tree in dropdown using optgroups -->
-								<form:select multiple="single" path="categoryID" class="form-control">
+								<form:select multiple="single" path="categoryID" class="form-control" id="categoryID">
          							<!-- categoriesMap contains entries like: (parentName, childrenMap) -->
           							<c:forEach var="childrenMap" items="${categoriesMap}">
            								<optgroup label="${childrenMap.key}">
@@ -123,10 +125,11 @@
           							</c:forEach>        
         						</form:select>
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="dateGroup">
 								<label>Transaction date</label>
-								<div class="input-group input-append date" id="transactionDate" data-date-format="dd-mm-yyyy">
-									<form:input class="form-control" type="text" path="date"></form:input>
+								<div class="control-label"></div> <!-- errors are put here using JS -->
+								<div class="input-group date">
+									<form:input type="text" class="form-control" path="date" id="date"></form:input>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 			  					</div>
 							</div>
@@ -135,13 +138,10 @@
 						<hr />
 
 						<fieldset>
-							<c:set var="descriptionErrors">
-								<form:errors path="description" />
-							</c:set>
-							<div class="form-group ${not empty descriptionErrors ? 'has-error' : ''}">
+							<div class="form-group" id="descriptionGroup">
 								<label>Description (optional)</label>
-								<form:errors path="description" cssClass="control-label" />
-								<form:input path="description" type="text" class="form-control" placeholder="Enter description here"  />
+								<div class="control-label"></div> <!-- errors are put here using JS -->
+								<form:input path="description" type="text" class="form-control" placeholder="Enter description here" id="description" />
 							</div>
 						</fieldset>
 					</div>
@@ -158,6 +158,51 @@
 	<%@ include file="/WEB-INF/views/common/includes.jsp"%>
 	
 	<script>
+		// add event that convert data to JSON format when user clicks submit button
+  		$('#addNewTransactionForm').submit(function(event) {
+  	      	var transaction = new Object();
+  	    	transaction.date = $('#date').val();
+			transaction.value = $('#value').val();
+  	    	transaction.categoryID = $('#categoryID').val();
+  	      	transaction.accountToID = $('#accountTo').val();
+  	      	transaction.accountFromID = $('#accountFrom').val();
+  	    	transaction.description = $('#description').val();
+
+  	    	$.ajax({
+  	        	url: "${pageContext.request.contextPath}/transactions/create.json",
+  	        	data: JSON.stringify(transaction),
+  	        	type: "POST",
+  	
+  	        	beforeSend: function(xhr) {
+  	            	xhr.setRequestHeader("Accept", "application/json");
+  	            	xhr.setRequestHeader("Content-Type", "application/json");
+  	        	},
+  	        	success: function(response) {
+  	        		// clear error prompts and CSS classes
+  	        		$('#addNewTransactionForm').find('.form-group').removeClass('has-error');
+  					$('#addNewTransactionForm').find('.control-label').empty();
+  					$('#addNewTransactionForm').find('.alert').hide();
+  							
+  	                // if there are errors - display them
+  					if (response.success == false) {
+  						for (var i = 0; i < response.result.length; i++) {
+  							var item = response.result[i];
+  							var $controlGroup = $('#' + item.field + 'Group');
+  							$controlGroup.addClass('has-error');
+  							$controlGroup.find('.control-label').html(item.defaultMessage);
+  						}
+  					} else {		 // if there are no errors
+  	                	$('#addNewTransactionModal').modal('hide');
+						$('#transactionAddedPrompt').show('slow');
+  	                	// TODO refresh transactions list
+  	                	// TODO clear filter values
+  					}
+  	        	}
+  	    	});
+  	 
+  	    	event.preventDefault();
+  	  	});
+
 		$(document).ready(function() {
 			// enable and disable accountTo/accountFrom fields
 			// depending on Transaction type selected in the form
@@ -174,10 +219,22 @@
         			$accountFrom.removeAttr('disabled');
     			}
 			}).trigger('change');
+			
+			// hide prompts
+			$('#transactionAddedPrompt').hide();
+  			$('#addNewTransactionForm').find('.alert').hide();
 
 			// init bootstrap-datepickers
-			$('.input-daterange').datepicker({});
-			$('#transactionDate').datepicker({});
+			$('.input-daterange').datepicker({
+			    format: "yyyy-mm-dd",
+			    todayBtn: "linked",
+			    autoclose: true
+			});
+			$('.date').datepicker({
+		    	format: "yyyy-mm-dd",
+		    	todayBtn: "linked",
+		    	autoclose: true
+			});
 		});
 	</script>
 

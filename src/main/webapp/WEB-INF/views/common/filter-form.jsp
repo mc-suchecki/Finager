@@ -18,7 +18,7 @@
 		</div>
 		<div class="form-group">
 			<label>Time period</label> <br>
-			<div class="input-daterange input-group" id="filterDatepicker" data-date-format="dd-mm-yyyy">
+			<div class="input-daterange input-group" id="filterDatepicker">
 				<input type="text" class="input-sm form-control" name="start" />
 				<span class="input-group-addon">to</span>
 				<input type="text" class="input-sm form-control" name="end" />
