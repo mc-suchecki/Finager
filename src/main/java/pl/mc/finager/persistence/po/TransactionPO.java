@@ -38,7 +38,7 @@ public class TransactionPO {
   private Date date;
 
 	@Column(name="value_transferred")
-  private BigDecimal valueTransferred;
+  private BigDecimal value;
 
 	@Column(name="account_balance_after")
   private BigDecimal accountBalanceAfter;
@@ -103,17 +103,17 @@ public class TransactionPO {
 	}
 
 	/**
-	 * @return the valueTransferred
+	 * @return the value
 	 */
-	public BigDecimal getValueTransferred() {
-		return valueTransferred;
+	public BigDecimal getValue() {
+		return value;
 	}
 
 	/**
-	 * @param valueTransferred the valueTransferred to set
+	 * @param value the value to set
 	 */
-	public void setValueTransferred(BigDecimal valueTransferred) {
-		this.valueTransferred = valueTransferred;
+	public void setValue(BigDecimal value) {
+		this.value= value;
 	}
 
 	/**

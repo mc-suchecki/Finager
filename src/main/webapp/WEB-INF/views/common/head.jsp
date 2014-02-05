@@ -28,5 +28,14 @@
     <link href="${bootstrapDatepickerCSS}" rel="stylesheet"></link>
 	<spring:url value="/webjars/bootstrap-datepicker/1.3.0/css/datepicker3.css" var="bootstrapDatepicker3CSS" />
     <link href="${bootstrapDatepicker3CSS}" rel="stylesheet"></link>
+    
+    <!-- Datatables -->
+	<spring:url value="/webjars/datatables-bootstrap/2-20120201/DT_bootstrap.css" var="bootstrapDatatables" />
+    <link href="${bootstrapDatatables}" rel="stylesheet"></link>
+	<spring:url value="/webjars/datatables/1.9.4/media/css/jquery.dataTables.css" var="datatables" />
+    <link href="${datatables}" rel="stylesheet"></link>
+
+	<!-- META-INF/resources/webjars/datatables/1.9.4/media/css/jquery.dataTables.css
+	META-INF/resources/webjars/datatables/1.9.4/media/css/jquery.dataTables_themeroller.css -->
 </head>
 

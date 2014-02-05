@@ -1,6 +1,7 @@
 package pl.mc.finager.web;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -13,15 +14,17 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pl.mc.finager.model.JSONFilterValues;
 import pl.mc.finager.model.JSONValidationResponse;
 import pl.mc.finager.model.fo.TransactionFO;
+import pl.mc.finager.model.vo.TransactionVO;
 import pl.mc.finager.service.AccountService;
 import pl.mc.finager.service.TransactionService;
 
@@ -42,11 +45,18 @@ public class TransactionsController {
 
 	/** Returns the transactions view. */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public String showTransactions(Model model, Principal principal, Locale locale) {
-		logger.info("showTransactions");
+	public String loadTransactionsView(Model model, Principal principal, Locale locale) {
+		logger.info("loadTransactionsView");
 		String name = principal.getName();
 		model = populateModelAttributes(model, name, locale);
 		return "transactions";
+	}
+
+	@RequestMapping(value = "/get", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody List<TransactionVO> getTransactions(@RequestBody final JSONFilterValues filterValues, final Principal principal) {
+		// TODO pass all of the filter values
+		return transactionService.getUserTransactions(principal.getName(), filterValues.getAccountFilter());
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST,
@@ -63,7 +73,7 @@ public class TransactionsController {
 			response.setSuccess(true);
 			String name = principal.getName();
 		  transactionService.addNewTransaction(transaction, name);
-			//response.setResult(transactionService.getAllTransactions());
+			response.setResult(transactionService.getUserTransactions(name, null));
 		}
 		
 		return response;

@@ -22,6 +22,7 @@ public interface TransactionRepository {
 	 * Returns list of all transactions that belong to user with given ID.
 	 * TODO - add parameters for filtering results
 	 * @param userID ID of the user who is the owner of the transactions
+	 * @param accountFilter 
 	 */
-	List<TransactionVO> getTransactionsForUserID(long userID);
+	List<TransactionVO> getTransactionsForUserID(long userID, Integer accountFilter);
 }

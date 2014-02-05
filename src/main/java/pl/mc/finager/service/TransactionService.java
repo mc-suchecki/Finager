@@ -2,6 +2,7 @@ package pl.mc.finager.service;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.validation.Errors;
 
 import pl.mc.finager.model.fo.TransactionFO;
 import pl.mc.finager.model.vo.AccountVO;
+import pl.mc.finager.model.vo.TransactionVO;
 import pl.mc.finager.persistence.AccountRepository;
 import pl.mc.finager.persistence.CategoryRepository;
 import pl.mc.finager.persistence.TransactionRepository;
@@ -40,6 +42,15 @@ public class TransactionService {
 		Integer accountFromID = transaction.getAccountFromID();
 		
 		AccountVO involvedAccount;
+		
+		// check if one of the accountIDs is not null
+		if (accountToID == null && accountFromID == null) {
+			errors.rejectValue("accountToID", "errors.transaction.accountToIsNull",
+					"Account to and account from cannot be both empty!");
+			errors.rejectValue("accountFromID", "errors.transaction.accountFromIsNull",
+					"Account to and account from cannot be both empty!");
+			return errors;
+		}
 
 		// transaction of transfer type 
 		if (accountToID != null && accountFromID != null) {
@@ -115,6 +126,10 @@ public class TransactionService {
 	
 	public Map<String, Map<Integer, String>> getAllCategories() {
 		return categoryRepository.getAllCategories();
+	}
+
+	public List<TransactionVO> getUserTransactions(final String userEmail, final Integer accountFilter) {
+		return transactionRepository.getTransactionsForUserID(userRepository.getUserID(userEmail), accountFilter);
 	}
 
 }

@@ -82,7 +82,8 @@ public class AccountRepositoryJPA implements AccountRepository {
 		for (Object[] result : results) {
 			Currency currency = Currency.getInstance((String) result[0]);
 			BigDecimal moneyAmount = (BigDecimal) result[1];
-			totalMap.put(currency, moneyAmount.setScale(currency.getDefaultFractionDigits(), RoundingMode.UNNECESSARY));
+			totalMap.put(currency, moneyAmount.setScale(currency.getDefaultFractionDigits(),
+					RoundingMode.UNNECESSARY));
 		}
 		return totalMap;
 	}

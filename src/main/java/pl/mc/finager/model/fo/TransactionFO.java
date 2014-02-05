@@ -31,10 +31,9 @@ public class TransactionFO {
 	@Length(min=0, max=255)
 	private String description;
 	
-	/** These fields are set by TransactionService. */
+	/** These fields are set by TransactionService after submitting the form. */
 	private BigDecimal accountToPreviousBalance;
 	private BigDecimal accountFromPreviousBalance;
-
 
 	/**
 	 * Default constructor.

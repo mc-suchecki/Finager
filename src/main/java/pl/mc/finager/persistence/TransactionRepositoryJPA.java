@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class TransactionRepositoryJPA implements TransactionRepository {
 		// persist income
 		if (newTransaction.getAccountToID() != null) {
 			transactionPO.setAccountID(newTransaction.getAccountToID());
-			transactionPO.setValueTransferred(newTransaction.getValue());
+			transactionPO.setValue(newTransaction.getValue());
 			transactionPO.setAccountBalanceAfter(
 					newTransaction.getAccountToPreviousBalance().add(newTransaction.getValue()));
 			em.persist(transactionPO);
@@ -52,7 +53,7 @@ public class TransactionRepositoryJPA implements TransactionRepository {
 		// persist expense
 		if (newTransaction.getAccountFromID() != null) {
 			transactionPO.setAccountID(newTransaction.getAccountFromID());
-			transactionPO.setValueTransferred(newTransaction.getValue().negate());
+			transactionPO.setValue(newTransaction.getValue().negate());
 			transactionPO.setAccountBalanceAfter(
 					newTransaction.getAccountFromPreviousBalance().subtract(newTransaction.getValue()));
 			if (persistedTransactionNumber != null) {
@@ -67,10 +68,29 @@ public class TransactionRepositoryJPA implements TransactionRepository {
 	}
 
 	@Override
-	public List<TransactionVO> getTransactionsForUserID(final long userID) {
+	@SuppressWarnings("unchecked")
+	public List<TransactionVO> getTransactionsForUserID(final long userID, final Integer accountFilter) {
 		logger.info("Method getTransactionsForUserID invoked");
-		// TODO Auto-generated method stub
-		return null;
+		// TODO set transaction type?
+		// TODO add filtering parameters - accountID, type, dateRange
+		// TODO try to code this using Criteria API - more elegant
+		StringBuffer queryString = new StringBuffer("SELECT new pl.mc.finager.model.vo.TransactionVO("
+				+ "transaction.number, account.name, transaction.value, account.currency, "
+				+ "transaction.date, category.name, transaction.description) "
+				+ "FROM TransactionPO transaction "
+				+ "JOIN AccountPO account ON transaction.accountID = account.id "
+				+ "JOIN CategoryPO category ON transaction.categoryID = category.ID "
+				+ "WHERE account.userID = :userID ");
+		if (accountFilter != null) {
+			queryString.append("AND account.id = :accountID ");
+		} 
+		queryString.append("ORDER BY transaction.number DESC, transaction.number DESC ");
+		Query query = em.createQuery(queryString.toString(), TransactionVO.class);
+		query.setParameter("userID", userID);
+		if (accountFilter != null) {
+			query.setParameter("accountID", accountFilter);
+		} 
+		return (List<TransactionVO>) query.getResultList();
 	}
 
 }

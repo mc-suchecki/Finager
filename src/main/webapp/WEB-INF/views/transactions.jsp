@@ -28,39 +28,9 @@
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 					<strong>Well done!</strong> Your transaction was successfully created!
 				</div>
-				<!-- Transactions table mockup -->
+				<!-- Transactions data table -->
 				<div class="row">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>Account</th>
-								<th>Type</th>
-								<th>Description</th>
-								<th>Date</th>
-								<th>Value</th>
-								<th>Currency</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td>Regular account</td> <td>Income</td> <td>Nothing to see here, move around.</td> <td>03-02-2014</td> <td>100</td> <td>PLN</td>
-							<td><span class="glyphicon glyphicon-edit"></span> <span class="glyphicon glyphicon-remove"></span></td>
-						</tr>
-						<tr>
-							<td>Erasmus account</td> <td>Outcome</td> <td>Nothing to see here, move around.</td> <td>03-02-2014</td> <td>50</td> <td>EUR</td>
-							<td><span class="glyphicon glyphicon-edit"></span> <span class="glyphicon glyphicon-remove"></span></td>
-						</tr>
-						<tr>
-							<td>Pocket money</td> <td>Income</td> <td>Nothing to see here, move around.</td> <td>03-02-2014</td> <td>10</td> <td>PLN</td>
-							<td><span class="glyphicon glyphicon-edit"></span> <span class="glyphicon glyphicon-remove"></span></td>
-						</tr>
-						<tr>
-							<td>Regular account</td> <td>Outcome</td> <td>Nothing to see here, move around.</td> <td>03-02-2014</td> <td>1000</td> <td>PLN</td>
-							<td><span class="glyphicon glyphicon-edit"></span> <span class="glyphicon glyphicon-remove"></span></td>
-						</tr>
-						</tbody>
-					</table>
+					<table class="table table-striped" class="display" id="transactionsDataTable"></table>
 				</div>
 			</div>
 		</div>
@@ -158,6 +128,52 @@
 	<%@ include file="/WEB-INF/views/common/includes.jsp"%>
 	
 	<script>
+		// function populating DataTable with transactions
+  	    // TODO check if DataTables can't handle data without conv.
+		function populateTransactionDatatable(transactions) {
+			var data = [];
+			for (var i = 0; i < transactions.length; i++) {
+				var row = transactions[i];
+				data.push( [ row.accountName, row.date, row.value, row.currencyCode, row.categoryName, row.description] );
+			}
+
+			$('#transactionsDataTable').dataTable().fnDestroy();
+            $('#transactionsDataTable').dataTable( {
+				"bSort" : false,
+				"aaData": data
+			} );   
+		}
+		
+		// function downloading filtered transaction list from the server
+		function updateTransactionsTable() {
+			var filterValues = {
+				accountFilter : $('#accountFilter').val(),
+				typeFilter : $('typeFilter').val(),
+				startDateFilter : $('startDateFilter').val(),
+				endDateFilter : $('endDateFilter').val()
+			};
+			$.ajax({
+  	        	url: "${pageContext.request.contextPath}/transactions/get.json",
+  	        	data: JSON.stringify(filterValues),
+  	        	type: "POST",
+  	
+  	        	beforeSend: function(xhr) {
+  	            	xhr.setRequestHeader("Accept", "application/json");
+  	            	xhr.setRequestHeader("Content-Type", "application/json");
+  	        	},
+  	        	success: function(response) {
+					// refresh transactions table
+					populateTransactionDatatable(response);
+  	        	}
+  	    	});
+		}
+		
+		// add events that update transactions table after changing filters value
+		$("#accountFilter").change(function() { updateTransactionsTable(); });
+		$("#typeFilter").change(function() { updateTransactionsTable(); });
+		$("#startDateFilter").change(function() { updateTransactionsTable(); });
+		$("#endDateFilter").change(function() { updateTransactionsTable(); });
+
 		// add event that convert data to JSON format when user clicks submit button
   		$('#addNewTransactionForm').submit(function(event) {
   	      	var transaction = new Object();
@@ -192,10 +208,18 @@
   							$controlGroup.find('.control-label').html(item.defaultMessage);
   						}
   					} else {		 // if there are no errors
+  						// hide modal and show prompt
   	                	$('#addNewTransactionModal').modal('hide');
 						$('#transactionAddedPrompt').show('slow');
-  	                	// TODO refresh transactions list
-  	                	// TODO clear filter values
+
+  	                	// clear filter values
+						$('#accountFilter').val( $('#accountFilter').prop('defaultSelected') );
+						$('#typeFilter').val( $('#typeFilter').prop('defaultSelected') );
+						$('#startDateFilter').val("");
+						$('#endDateFilter').val("");
+
+						// refresh transactions table
+						populateTransactionDatatable(response.result);
   					}
   	        	}
   	    	});
@@ -235,6 +259,24 @@
 		    	todayBtn: "linked",
 		    	autoclose: true
 			});
+			
+			// init transactions DataTable
+			$('#transactionsDataTable').dataTable( {
+				"bSort" : false,
+				"bDestroy" : true,
+				"aoColumns": [
+    				{ "sTitle": "Account name" },
+    				{ "sTitle": "Date" },
+    				{ "sTitle": "Value" },
+					{ "sTitle": "Currency" },
+    				{ "sTitle": "Category" },
+    				{ "sTitle": "Description" }
+				]
+			} );   
+
+			// download transactions using AJAX
+			updateTransactionsTable();
+
 		});
 	</script>
 
