@@ -2,6 +2,8 @@ package pl.mc.finager.persistence;
 
 import java.util.List;
 
+import pl.mc.finager.model.JSONChartData;
+import pl.mc.finager.model.JSONFilterValues;
 import pl.mc.finager.model.fo.TransactionFO;
 import pl.mc.finager.model.vo.TransactionVO;
 
@@ -25,4 +27,12 @@ public interface TransactionRepository {
 	 * @param accountFilter 
 	 */
 	List<TransactionVO> getTransactionsForUserID(long userID, Integer accountFilter);
+
+	/**
+	 * Returns data needed to generate chart displaying categories and amount of money
+	 * assigned to transactions under particular category.
+	 * @param userID ID of the user who is the owner of the transactions
+	 * @param filterValues object holding data about the filters that the user set 
+	 */
+	List<JSONChartData> getChartDataForUserID(long userID, JSONFilterValues filterValues);
 }

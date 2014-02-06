@@ -19,7 +19,7 @@
 			<div class="col-md-8 col-md-offset-1">
 				<div class="row">
 					<div class="chartContainer col-md-7">
-						<canvas id="myChart" width="400" height="400"></canvas>
+						<canvas id="chart" width="400" height="400"></canvas>
 					</div>
 					<ul id="chartLegend" class="col-md-3 list-group"></ul>
 				</div>
@@ -52,34 +52,49 @@
 				title.appendChild(text);
 			});
 		}
+
+		// function downloading filtered data for chart
+		function updateChart() {
+			var filterValues = {
+				accountFilter : $('#accountFilter').val(),
+				typeFilter : $('typeFilter').val(),
+				startDateFilter : $('startDateFilter').val(),
+				endDateFilter : $('endDateFilter').val()
+			};
+			$.ajax({
+  	        	url: "${pageContext.request.contextPath}/reports/getData.json",
+  	        	data: JSON.stringify(filterValues),
+  	        	type: "POST",
+  	
+  	        	beforeSend: function(xhr) {
+  	            	xhr.setRequestHeader("Accept", "application/json");
+  	            	xhr.setRequestHeader("Content-Type", "application/json");
+  	        	},
+  	        	success: function(response) {
+					var chart = $("#chart").get(0).getContext("2d");
+					var chartLegend = $("#chartLegend");
+					var theChart = new Chart(chart).Pie(response);
+					chartLegend.empty();
+					legend(chartLegend.get(0), response);
+  	        	}
+  	    	});
+		}
+
 		$(document).ready(function() {
 			// init bootstrap-datepicker
 			$('.input-daterange').datepicker({
-				format: "dd/mm/yyyy"
+			    format: "yyyy-mm-dd",
+			    todayBtn: "linked",
+			    autoclose: true
 			});
 
-			// mockup data - TODO remove
-			var data = [ {
-				value : 30,
-				color : "#F38630",
-				title : "Food"
-			}, {
-				value : 50,
-				color : "#69D2E7",
-				title : "Bills"
-			}, {
-				value : 10,
-				color : "#E0E4CC",
-				title : "Other"
-			}, {
-				value : 20,
-				color : "#4892EF",
-				title : "Hobby"
-			} ]
-			var ctx = $("#myChart").get(0).getContext("2d");
-			var ctx_legend = $("#chartLegend").get(0);
-			var myNewChart = new Chart(ctx).Pie(data);
-			legend(ctx_legend, data);
+			// add events that update transactions table after changing filters value
+			$("#accountFilter").change(function() { updateChart(); });
+			$("#typeFilter").change(function() { updateChart(); });
+			$("#startDateFilter").change(function() { updateChart(); });
+			$("#endDateFilter").change(function() { updateChart(); });
+			
+			updateChart();
 		});
 	</script>
 </body>

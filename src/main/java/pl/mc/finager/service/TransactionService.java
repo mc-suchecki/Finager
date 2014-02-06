@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
+import pl.mc.finager.model.JSONChartData;
+import pl.mc.finager.model.JSONFilterValues;
 import pl.mc.finager.model.fo.TransactionFO;
 import pl.mc.finager.model.vo.AccountVO;
 import pl.mc.finager.model.vo.TransactionVO;
@@ -130,6 +132,10 @@ public class TransactionService {
 
 	public List<TransactionVO> getUserTransactions(final String userEmail, final Integer accountFilter) {
 		return transactionRepository.getTransactionsForUserID(userRepository.getUserID(userEmail), accountFilter);
+	}
+
+	public List<JSONChartData> getReportsData(final String userEmail, final JSONFilterValues filterValues) {
+		return transactionRepository.getChartDataForUserID(userRepository.getUserID(userEmail), filterValues);
 	}
 
 }

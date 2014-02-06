@@ -1,6 +1,11 @@
 package pl.mc.finager.persistence;
 
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import pl.mc.finager.model.JSONChartData;
+import pl.mc.finager.model.JSONFilterValues;
 import pl.mc.finager.model.fo.TransactionFO;
 import pl.mc.finager.model.vo.TransactionVO;
 import pl.mc.finager.persistence.po.TransactionPO;
@@ -72,7 +79,7 @@ public class TransactionRepositoryJPA implements TransactionRepository {
 	public List<TransactionVO> getTransactionsForUserID(final long userID, final Integer accountFilter) {
 		logger.info("Method getTransactionsForUserID invoked");
 		// TODO set transaction type?
-		// TODO add filtering parameters - accountID, type, dateRange
+		// TODO add filtering parameters - type, dateRange
 		// TODO try to code this using Criteria API - more elegant
 		StringBuffer queryString = new StringBuffer("SELECT new pl.mc.finager.model.vo.TransactionVO("
 				+ "transaction.number, account.name, transaction.value, account.currency, "
@@ -91,6 +98,48 @@ public class TransactionRepositoryJPA implements TransactionRepository {
 			query.setParameter("accountID", accountFilter);
 		} 
 		return (List<TransactionVO>) query.getResultList();
+	}
+
+	@Override
+	public List<JSONChartData> getChartDataForUserID(final long userID, final JSONFilterValues filterValues) {
+		logger.info("Method getChartDataForUserID invoked");
+		// TODO add filtering parameters - account, type, dateRange
+		// TODO try to code this using Criteria API - more elegant
+		StringBuffer queryString = new StringBuffer("SELECT category.name, sum(transaction.value) "
+				+ "FROM TransactionPO transaction "
+				+ "JOIN AccountPO account ON transaction.accountID = account.id "
+				+ "JOIN CategoryPO category ON transaction.categoryID = category.ID "
+				+ "WHERE account.userID = :id ");
+		if (filterValues.getAccountFilter() != null) {
+			queryString.append("AND account.id = :accountID ");
+		} 
+		queryString.append("GROUP BY category.name");
+		Query query = em.createQuery(queryString.toString(), Map.class);
+		query.setParameter("id", userID);
+		if (filterValues.getAccountFilter() != null) {
+			query.setParameter("accountID", filterValues.getAccountFilter());
+		} 
+		List<Object[]> results = query.getResultList();
+		List<JSONChartData> chartDataList = new ArrayList<JSONChartData>();
+		for (Object[] result : results) {
+			chartDataList.add(new JSONChartData(((BigDecimal) result[1]).abs(),
+					generateRandomColorCode(), (String) result[0]));
+		}
+		return chartDataList;
+	}
+	
+	private String generateRandomColorCode() {
+		Random random = new Random();
+		final float hue = random.nextFloat();
+		// Saturation between 0.1 and 0.3
+		final float saturation = (random.nextInt(2000) + 1000) / 10000f;
+		final float luminance = 0.9f;
+		final Color color = Color.getHSBColor(hue, saturation, luminance);
+		String hex = Integer.toHexString(color.getRGB() & 0xffffff);
+		if (hex.length() < 6) {
+		    hex = "0" + hex;
+		}
+		return "#" + hex;
 	}
 
 }
