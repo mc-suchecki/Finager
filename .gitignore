@@ -1,7 +1,7 @@
 *.class
 
 # Binaries #
-/build/
+build/
 bin/
 target/
  
@@ -17,3 +17,10 @@ Finager.iml
 
 # Spring #
 .springBeans
+
+# Android #
+/android/.gradle
+/android/local.properties
+/android/.idea/workspace.xml
+/android/.idea/libraries
+/android/.DS_Store
