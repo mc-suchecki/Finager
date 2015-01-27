@@ -1,6 +1,6 @@
 *.class
 
-# Directories #
+# Binaries #
 /build/
 bin/
 target/
@@ -11,23 +11,9 @@ target/
 *.ear
 *.db
  
-# Eclipse #
-.project
-.metadata
-bin/**
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-/src/main/resources/rebel.xml
-.externalToolBuilders/
-*.launch
+# Intelij IDEA #
+.idea/
+Finager.iml
 
 # Spring #
 .springBeans

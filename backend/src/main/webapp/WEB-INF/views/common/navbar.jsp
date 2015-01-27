@@ -16,34 +16,34 @@
 			<ul class="nav navbar-nav">
 				<c:choose>
 					<c:when test='${activeView == "overview"}'>
-						<li class="active"><a href="/finager/overview/">Overview</a></li>
-						<li><a href="/finager/accounts">Accounts</a></li>
-						<li><a href="/finager/transactions">Transactions</a></li>
-						<li><a href="/finager/reports">Reports</a></li>
+						<li class="active"><a href="/overview/">Overview</a></li>
+						<li><a href="/accounts">Accounts</a></li>
+						<li><a href="/transactions">Transactions</a></li>
+						<li><a href="/reports">Reports</a></li>
     				</c:when>
 					<c:when test='${activeView == "accounts"}'>
-						<li><a href="/finager/overview/">Overview</a></li>
-						<li class="active"><a href="/finager/accounts">Accounts</a></li>
-						<li><a href="/finager/transactions">Transactions</a></li>
-						<li><a href="/finager/reports">Reports</a></li>
+						<li><a href="/overview/">Overview</a></li>
+						<li class="active"><a href="/accounts">Accounts</a></li>
+						<li><a href="/transactions">Transactions</a></li>
+						<li><a href="/reports">Reports</a></li>
     				</c:when>
 					<c:when test='${activeView == "transactions"}'>
-						<li><a href="/finager/overview/">Overview</a></li>
-						<li><a href="/finager/accounts">Accounts</a></li>
-						<li class="active"><a href="/finager/transactions">Transactions</a></li>
-						<li><a href="/finager/reports">Reports</a></li>
+						<li><a href="/overview/">Overview</a></li>
+						<li><a href="/accounts">Accounts</a></li>
+						<li class="active"><a href="/transactions">Transactions</a></li>
+						<li><a href="/reports">Reports</a></li>
     				</c:when>
 					<c:when test='${activeView == "reports"}'>
-						<li><a href="/finager/overview/">Overview</a></li>
-						<li><a href="/finager/accounts">Accounts</a></li>
-						<li><a href="/finager/transactions">Transactions</a></li>
-						<li class="active"><a href="/finager/reports">Reports</a></li>
+						<li><a href="/overview/">Overview</a></li>
+						<li><a href="/accounts">Accounts</a></li>
+						<li><a href="/transactions">Transactions</a></li>
+						<li class="active"><a href="/reports">Reports</a></li>
     				</c:when>
 					<c:otherwise>
-						<li><a href="/finager/overview/">Overview</a></li>
-						<li><a href="/finager/accounts">Accounts</a></li>
-						<li><a href="/finager/transactions">Transactions</a></li>
-						<li><a href="/finager/reports">Reports</a></li>
+						<li><a href="/overview/">Overview</a></li>
+						<li><a href="/accounts">Accounts</a></li>
+						<li><a href="/transactions">Transactions</a></li>
+						<li><a href="/reports">Reports</a></li>
  					</c:otherwise>
 				</c:choose>
 			</ul>
@@ -51,7 +51,7 @@
 			<li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, ${username}! <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/finager/settings">Settings</a></li>
+                <li><a href="/settings">Settings</a></li>
                 <li class="divider"></li>
                 <li><a href="<c:url value="/j_spring_security_logout" />">Log out</a></li>
               </ul>
